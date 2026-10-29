@@ -153,6 +153,7 @@
         <h2>3 &middot; Options</h2>
         <div class="opts">
           <div class="field"><label for="copies">Labels per part</label><input type="number" id="copies" min="1" max="20" value="1"></div>
+          <div class="field"><label for="mfgsize">Part number size (pt)</label><input type="number" id="mfgsize" min="6" max="16" step="0.5" value="11"></div>
           <div class="field"><label for="dmin">Default Min</label><input type="number" id="dmin" min="0" placeholder="blank"></div>
           <div class="field"><label for="dmax">Default Max</label><input type="number" id="dmax" min="0" placeholder="blank"></div>
           <p class="hint wide">Default Min and Max are used only for parts that have none in the file.</p>
@@ -245,7 +246,7 @@
 
   const $ = id => document.getElementById(id);
   const el = { file: $("file"), drop: $("drop"), status: $("fileStatus"), fields: $("fields"), copies: $("copies"),
-    dmin: $("dmin"), dmax: $("dmax"), prefix: $("prefix"), save: $("save"), saveDoc: $("saveDoc"), saveNote: $("saveNote"),
+    mfgsize: $("mfgsize"), dmin: $("dmin"), dmax: $("dmax"), prefix: $("prefix"), save: $("save"), saveDoc: $("saveDoc"), saveNote: $("saveNote"),
     count: $("count"), warnings: $("warnings"), grid: $("grid") };
 
   /* ---------- helpers ---------- */
@@ -264,6 +265,9 @@
   function setFont(bold, size) { const d = measureDoc(); d.setFont("helvetica", bold ? "bold" : "normal"); d.setFontSize(size); return d; }
   const width = (t, bold, size) => setFont(bold, size).getTextWidth(t);
   function fitSize(t, bold, max, min, maxW) { let s = max; while (s > min && width(t, bold, s) > maxW) s -= 0.25; return s; }
+
+  /* largest size for the big part number at the top; the label shrinks it further if the text is long */
+  function mfgMax() { const v = parseFloat(el.mfgsize.value); return isFinite(v) ? Math.max(5, Math.min(16, v)) : 11; }
 
   const qrCache = new Map();
   function makeQR(url) {
@@ -285,11 +289,11 @@
 
     const mfg = part.mfg;
     if (mfg) {
-      const size = fitSize(mfg, true, 14, 9, topW);
+      const size = fitSize(mfg, true, mfgMax(), Math.min(9, mfgMax()), topW);
       if (width(mfg, true, size) <= topW) {
         y += size * 0.85; g.text(mfg, tx, y, size, true); y += size * 0.25 + 3;
       } else {
-        let s = 9, first, second;
+        let s = Math.min(9, mfgMax()), first, second;
         for (;;) {
           first = mfg;
           while (width(first, true, s) > topW && first.length > 1) first = first.slice(0, -1);
@@ -524,7 +528,7 @@
   ["dragenter", "dragover"].forEach(ev => el.drop.addEventListener(ev, e => { e.preventDefault(); el.drop.classList.add("over"); }));
   ["dragleave", "drop"].forEach(ev => el.drop.addEventListener(ev, e => { e.preventDefault(); el.drop.classList.remove("over"); }));
   el.drop.addEventListener("drop", e => { const f = e.dataTransfer && e.dataTransfer.files[0]; if (f) loadFile(f); });
-  [el.copies, el.dmin, el.dmax, el.prefix].forEach(i => i.addEventListener("input", async () => { await refresh(); setStatus(); }));
+  [el.copies, el.mfgsize, el.dmin, el.dmax, el.prefix].forEach(i => i.addEventListener("input", async () => { await refresh(); setStatus(); }));
 
   /* ---------- PDF ---------- */
   function buildPdf() {
@@ -563,11 +567,11 @@
     const tx = M + QR + 6, fullW = W - M - tx, topW = fullW - LOGO - 3;
     const plan = { sapSize: fitSize(part.sap, true, 8, 5, QR + 4), mfgSize: 14, mfgLines: 1, descSize: 7.5, descText: part.desc, descLines: 0 };
     if (part.mfg) {
-      plan.mfgSize = fitSize(part.mfg, true, 14, 9, topW);
+      plan.mfgSize = fitSize(part.mfg, true, mfgMax(), Math.min(9, mfgMax()), topW);
       if (width(part.mfg, true, plan.mfgSize) <= topW) plan.mfgLines = 1;
       else {
         /* Word wraps greedily at hyphens, so leave room: shrink until the text needs well under two full lines */
-        let sz = 9; while (sz > 5.5 && width(part.mfg, true, sz) > 1.5 * topW) sz -= 0.25;
+        let sz = Math.min(9, mfgMax()); while (sz > 5.5 && width(part.mfg, true, sz) > 1.5 * topW) sz -= 0.25;
         plan.mfgSize = sz; plan.mfgLines = 2;
       }
     }
