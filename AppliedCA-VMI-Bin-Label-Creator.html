@@ -314,6 +314,7 @@
       y += LOGO;
     }
 
+    y = Math.max(y, M + LOGO + 2);   /* description always starts below the logo */
     const mmSize = 8, mn = part.min, mx = part.max;
     const hasMM = mn !== "" || mx !== "";
     if (hasMM) g.text("Min: " + (mn || "-") + "     Max: " + (mx || "-"), tx, H - M - 1, mmSize, true);
@@ -581,7 +582,7 @@
     }
     if (part.desc) {
       const hasMM = part.min !== "" || part.max !== "";
-      const used = part.mfg ? plan.mfgLines * plan.mfgSize * 1.1 + 3 : LOGO;
+      const used = Math.max(LOGO + 2, part.mfg ? plan.mfgLines * plan.mfgSize * 1.1 + 3 : 0);
       const availH = 60 - (hasMM ? 12 : 0) - used;
       let size = 7.5, lines = [], fits = false;
       while (size >= 5) {
@@ -599,7 +600,7 @@
       }
       plan.descSize = size; plan.descLines = lines.length;
     }
-    plan.used = (part.mfg ? plan.mfgLines * plan.mfgSize * 1.1 + 3 : LOGO) + plan.descLines * plan.descSize * 1.12;
+    plan.used = Math.max(LOGO + 2, part.mfg ? plan.mfgLines * plan.mfgSize * 1.1 + 3 : 0) + plan.descLines * plan.descSize * 1.12;
     return plan;
   }
 
@@ -631,10 +632,10 @@
 
       const right = [];
       if (part.mfg) {
-        right.push(new D.Paragraph({ indent: { right: tw(LOGO + 3) }, spacing: Object.assign({ before: 0, after: tw(3) }, exact(plan.mfgSize * 1.1)),
+        right.push(new D.Paragraph({ indent: { right: tw(LOGO + 3) }, spacing: Object.assign({ before: 0, after: tw(Math.max(3, LOGO + 2 - plan.mfgLines * plan.mfgSize * 1.1)) }, exact(plan.mfgSize * 1.1)),
           children: [new D.TextRun({ text: part.mfg, bold: true, size: hp(plan.mfgSize), font: "Arial" })] }));
       } else {
-        right.push(new D.Paragraph({ spacing: Object.assign({ before: 0, after: 0 }, exact(LOGO)), children: [] }));
+        right.push(new D.Paragraph({ spacing: Object.assign({ before: 0, after: 0 }, exact(LOGO + 2)), children: [] }));
       }
       if (part.desc) {
         right.push(new D.Paragraph({ spacing: Object.assign({ before: 0, after: 0 }, exact(plan.descSize * 1.12)),
