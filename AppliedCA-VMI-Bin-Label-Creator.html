@@ -154,6 +154,7 @@
         <div class="opts">
           <div class="field"><label for="copies">Labels per part</label><input type="number" id="copies" min="1" max="20" value="1"></div>
           <div class="field"><label for="mfgsize">Part number size (pt)</label><input type="number" id="mfgsize" min="6" max="16" step="0.5" value="11"></div>
+          <div class="field"><label for="leftpad">Extra left margin (in)</label><input type="number" id="leftpad" min="0" max="0.2" step="0.01" value="0.03"></div>
           <div class="field"><label for="dmin">Default Min</label><input type="number" id="dmin" min="0" placeholder="blank"></div>
           <div class="field"><label for="dmax">Default Max</label><input type="number" id="dmax" min="0" placeholder="blank"></div>
           <p class="hint wide">Default Min and Max are used only for parts that have none in the file.</p>
@@ -246,7 +247,7 @@
 
   const $ = id => document.getElementById(id);
   const el = { file: $("file"), drop: $("drop"), status: $("fileStatus"), fields: $("fields"), copies: $("copies"),
-    mfgsize: $("mfgsize"), dmin: $("dmin"), dmax: $("dmax"), prefix: $("prefix"), save: $("save"), saveDoc: $("saveDoc"), saveNote: $("saveNote"),
+    mfgsize: $("mfgsize"), leftpad: $("leftpad"), dmin: $("dmin"), dmax: $("dmax"), prefix: $("prefix"), save: $("save"), saveDoc: $("saveDoc"), saveNote: $("saveNote"),
     count: $("count"), warnings: $("warnings"), grid: $("grid") };
 
   /* ---------- helpers ---------- */
@@ -269,6 +270,9 @@
   /* largest size for the big part number at the top; the label shrinks it further if the text is long */
   function mfgMax() { const v = parseFloat(el.mfgsize.value); return isFinite(v) ? Math.max(5, Math.min(16, v)) : 11; }
 
+  /* extra blank space on the left edge, entered in inches, used in points; everything shifts right and the text column narrows */
+  function leftPad() { const v = parseFloat(el.leftpad.value); return isFinite(v) ? Math.max(0, Math.min(0.2, v)) * 72 : 0; }
+
   const qrCache = new Map();
   function makeQR(url) {
     if (!qrCache.has(url)) { const q = qrcode(0, "M"); q.addData(url); q.make(); qrCache.set(url, q); }
@@ -277,14 +281,14 @@
 
   /* ---------- one label layout, drawn through a "pen" (canvas, PDF or dry run) ---------- */
   function layout(g, part, url, warn) {
-    const sap = part.sap;
-    g.qr(url, M, M, QR);
+    const sap = part.sap, ox = leftPad();
+    g.qr(url, M + ox, M, QR);
 
     const sapSize = fitSize(sap, true, 8, 5, QR + 4);
-    g.text(sap, M + QR / 2, M + QR + sapSize + 2, sapSize, true, "center");
+    g.text(sap, M + ox + QR / 2, M + QR + sapSize + 2, sapSize, true, "center");
     g.logo(W - M - LOGO, M, LOGO);
 
-    const tx = M + QR + 6, fullW = W - M - tx, topW = fullW - LOGO - 3;
+    const tx = M + ox + QR + 6, fullW = W - M - tx, topW = fullW - LOGO - 3;
     let y = M;
 
     const mfg = part.mfg;
@@ -528,7 +532,7 @@
   ["dragenter", "dragover"].forEach(ev => el.drop.addEventListener(ev, e => { e.preventDefault(); el.drop.classList.add("over"); }));
   ["dragleave", "drop"].forEach(ev => el.drop.addEventListener(ev, e => { e.preventDefault(); el.drop.classList.remove("over"); }));
   el.drop.addEventListener("drop", e => { const f = e.dataTransfer && e.dataTransfer.files[0]; if (f) loadFile(f); });
-  [el.copies, el.mfgsize, el.dmin, el.dmax, el.prefix].forEach(i => i.addEventListener("input", async () => { await refresh(); setStatus(); }));
+  [el.copies, el.mfgsize, el.leftpad, el.dmin, el.dmax, el.prefix].forEach(i => i.addEventListener("input", async () => { await refresh(); setStatus(); }));
 
   /* ---------- PDF ---------- */
   function buildPdf() {
@@ -564,7 +568,7 @@
   }
   /* same sizing rules as the PDF layout, expressed for Word paragraphs */
   function planText(part) {
-    const tx = M + QR + 6, fullW = W - M - tx, topW = fullW - LOGO - 3;
+    const ox = leftPad(), tx = M + ox + QR + 6, fullW = W - M - tx, topW = fullW - LOGO - 3;
     const plan = { sapSize: fitSize(part.sap, true, 8, 5, QR + 4), mfgSize: 14, mfgLines: 1, descSize: 7.5, descText: part.desc, descLines: 0 };
     if (part.mfg) {
       plan.mfgSize = fitSize(part.mfg, true, mfgMax(), Math.min(9, mfgMax()), topW);
@@ -608,7 +612,7 @@
     const noB = { top: none, bottom: none, left: none, right: none };
     const zero = { top: 0, bottom: 0, left: 0, right: 0 };
     const logoBytes = logoPng ? dataUrlBytes(logoPng) : null;
-    const leftW = tw(QR + 6), rightW = tw(W - 2 * M) - leftW;
+    const ox = leftPad(), leftW = tw(QR + 6), rightW = tw(W - 2 * M - ox) - leftW;
     const exact = pt => ({ line: tw(pt), lineRule: D.LineRuleType.EXACT });
     const sections = [];
 
@@ -659,7 +663,7 @@
         sections.push({
           properties: { page: {
             size: { width: tw(H), height: tw(W), orientation: D.PageOrientation.LANDSCAPE },
-            margin: { top: tw(M), bottom: tw(M), left: tw(M), right: tw(M), header: 0, footer: 0 } } },
+            margin: { top: tw(M), bottom: tw(M), left: tw(M + ox), right: tw(M), header: 0, footer: 0 } } },
           children: [table, closing]
         });
       }
