@@ -677,14 +677,25 @@
   }
 
   let downloadsApi = null;
-  async function getApi() {
+  async function getApi(askPermission) {
     if (downloadsApi) return downloadsApi;
-    try { downloadsApi = window.claude && window.claude.use ? await window.claude.use("downloads") : null; } catch (e) { downloadsApi = null; }
+    const use = n => (window.claude && window.claude.use ? window.claude.use(n) : Promise.resolve(null));
+    try { downloadsApi = await use("downloads"); } catch (e) { downloadsApi = null; }
+    if (!downloadsApi && askPermission) {
+      try {
+        const perms = await use("permissions");
+        if (perms) {
+          await perms.request(["downloads"]);
+          downloadsApi = await use("downloads");
+          if (!downloadsApi && (await perms.state("downloads")) === "denied") { try { await perms.manage(); downloadsApi = await use("downloads"); } catch (e2) {} }
+        }
+      } catch (e) { downloadsApi = null; }
+    }
     return downloadsApi;
   }
-  const NO_SAVE_MSG = "This view can't save files. Open the page from your Artifacts in claude.ai (not a preview) and try again.";
+  const NO_SAVE_MSG = "Saving is blocked in this view. Open the page's Permissions menu (top right in claude.ai) and allow downloads, or send your Excel file to Claude in the chat and it will make the files for you.";
   el.save.addEventListener("click", async () => {
-    const api = await getApi();
+    const api = await getApi(true);
     if (!api) { el.saveNote.className = "status"; el.saveNote.textContent = NO_SAVE_MSG; return; }
     el.save.disabled = true; el.saveNote.className = "status"; el.saveNote.textContent = "Building PDF...";
     try {
@@ -701,7 +712,7 @@
 
 
   el.saveDoc.addEventListener("click", async () => {
-    const api = await getApi();
+    const api = await getApi(true);
     if (!api) { el.saveNote.className = "status"; el.saveNote.textContent = NO_SAVE_MSG; return; }
     el.save.disabled = el.saveDoc.disabled = true; el.saveNote.className = "status"; el.saveNote.textContent = "Building Word file...";
     try {
