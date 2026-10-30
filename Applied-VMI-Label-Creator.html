@@ -152,8 +152,9 @@
         <h2>3 &middot; Options</h2>
         <div class="opts">
           <div class="field"><label for="copies">Labels per part</label><input type="number" id="copies" min="1" max="20" value="1"></div>
-          <div class="field"><label for="mfgsize">Part number size (pt)</label><input type="number" id="mfgsize" min="6" max="16" step="0.5" value="11"></div>
-          <div class="field"><label for="leftpad">Extra left margin (in)</label><input type="number" id="leftpad" min="0" max="0.2" step="0.01" value="0.03"></div>
+          <div class="field"><label for="mfgsize">Part number size (pt)</label><input type="number" id="mfgsize" min="6" max="16" step="0.5" value="8"></div>
+          <div class="field"><label for="descsize">Description size (pt)</label><input type="number" id="descsize" min="5" max="10" step="0.5" value="7.5"></div>
+          <div class="field"><label for="leftpad">Extra left margin (in)</label><input type="number" id="leftpad" min="0" max="0.2" step="0.01" value="0.04"></div>
           <div class="field"><label for="dmin">Default Min</label><input type="number" id="dmin" min="0" placeholder="blank"></div>
           <div class="field"><label for="dmax">Default Max</label><input type="number" id="dmax" min="0" placeholder="blank"></div>
           <p class="hint wide">Default Min and Max are used only for parts that have none in the file.</p>
@@ -246,7 +247,7 @@
 
   const $ = id => document.getElementById(id);
   const el = { file: $("file"), drop: $("drop"), status: $("fileStatus"), fields: $("fields"), copies: $("copies"),
-    mfgsize: $("mfgsize"), leftpad: $("leftpad"), dmin: $("dmin"), dmax: $("dmax"), prefix: $("prefix"), save: $("save"), saveDoc: $("saveDoc"), saveNote: $("saveNote"),
+    mfgsize: $("mfgsize"), leftpad: $("leftpad"), descsize: $("descsize"), dmin: $("dmin"), dmax: $("dmax"), prefix: $("prefix"), save: $("save"), saveDoc: $("saveDoc"), saveNote: $("saveNote"),
     count: $("count"), warnings: $("warnings"), grid: $("grid") };
 
   /* ---------- helpers ---------- */
@@ -267,7 +268,8 @@
   function fitSize(t, bold, max, min, maxW) { let s = max; while (s > min && width(t, bold, s) > maxW) s -= 0.25; return s; }
 
   /* largest size for the big part number at the top; the label shrinks it further if the text is long */
-  function mfgMax() { const v = parseFloat(el.mfgsize.value); return isFinite(v) ? Math.max(5, Math.min(16, v)) : 11; }
+  function mfgMax() { const v = parseFloat(el.mfgsize.value); return isFinite(v) ? Math.max(5, Math.min(16, v)) : 8; }
+  function descMax() { const v = parseFloat(el.descsize.value); return isFinite(v) ? Math.max(5, Math.min(10, v)) : 7.5; }
 
   /* extra blank space on the left edge, entered in inches, used in points; everything shifts right and the text column narrows */
   function leftPad() { const v = parseFloat(el.leftpad.value); return isFinite(v) ? Math.max(0, Math.min(0.2, v)) * 72 : 0; }
@@ -321,7 +323,7 @@
     const desc = part.desc;
     if (desc) {
       const availH = (H - M - (hasMM ? mmSize + 4 : 0)) - y;
-      let size = 7.5, lines = [], fits = false;
+      let size = descMax(), lines = [], fits = false;
       while (size >= 5) {
         lines = setFont(false, size).splitTextToSize(desc, fullW);
         if (lines.length * size * 1.12 <= availH) { fits = true; break; }
@@ -535,7 +537,7 @@
   ["dragenter", "dragover"].forEach(ev => el.drop.addEventListener(ev, e => { e.preventDefault(); el.drop.classList.add("over"); }));
   ["dragleave", "drop"].forEach(ev => el.drop.addEventListener(ev, e => { e.preventDefault(); el.drop.classList.remove("over"); }));
   el.drop.addEventListener("drop", e => { const f = e.dataTransfer && e.dataTransfer.files[0]; if (f) loadFile(f); });
-  [el.copies, el.mfgsize, el.leftpad, el.dmin, el.dmax, el.prefix].forEach(i => i.addEventListener("input", async () => { await refresh(); setStatus(); }));
+  [el.copies, el.mfgsize, el.descsize, el.leftpad, el.dmin, el.dmax, el.prefix].forEach(i => i.addEventListener("input", async () => { await refresh(); setStatus(); }));
 
   /* ---------- PDF ---------- */
   function buildPdf() {
@@ -586,7 +588,7 @@
       const hasMM = part.min !== "" || part.max !== "";
       const used = Math.max(LOGO + 2, part.mfg ? plan.mfgLines * plan.mfgSize * 1.1 + 3 : 0);
       const availH = 60 - (hasMM ? 12 : 0) - used;
-      let size = 7.5, lines = [], fits = false;
+      let size = descMax(), lines = [], fits = false;
       while (size >= 5) {
         lines = setFont(false, size).splitTextToSize(part.desc, fullW);
         if (lines.length * size * 1.12 <= availH) { fits = true; break; }
