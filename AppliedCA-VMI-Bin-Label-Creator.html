@@ -438,6 +438,7 @@
     });
   }
 
+  const NO_PARTS_MSG = "No labels yet. Pick the SAP number column in step 2 (every label needs one).";
   let renderToken = 0;
   async function refresh() {
     buildParts();
@@ -453,8 +454,10 @@
       ? state.parts.length + " part" + (state.parts.length === 1 ? "" : "s") + (copies > 1 ? " × " + copies : "") + " = " + total + " label" + (total === 1 ? "" : "s")
       : "No labels yet";
     el.save.textContent = total ? "Save PDF (" + total + " label" + (total === 1 ? "" : "s") + ")" : "Save PDF";
-    el.save.disabled = !total || !downloadsApi;
-    el.saveDoc.disabled = el.save.disabled;
+    el.save.disabled = !total;
+    el.saveDoc.disabled = !total;
+    if (!total) { el.saveNote.className = "status"; el.saveNote.textContent = NO_PARTS_MSG; }
+    else if (el.saveNote.textContent === NO_PARTS_MSG) el.saveNote.textContent = "";
 
     el.warnings.textContent = "";
     warn.slice(0, 12).forEach(w => { const li = document.createElement("li"); li.textContent = w; el.warnings.append(li); });
@@ -674,13 +677,20 @@
   }
 
   let downloadsApi = null;
+  async function getApi() {
+    if (downloadsApi) return downloadsApi;
+    try { downloadsApi = window.claude && window.claude.use ? await window.claude.use("downloads") : null; } catch (e) { downloadsApi = null; }
+    return downloadsApi;
+  }
+  const NO_SAVE_MSG = "This view can't save files. Open the page from your Artifacts in claude.ai (not a preview) and try again.";
   el.save.addEventListener("click", async () => {
-    if (!downloadsApi) return;
+    const api = await getApi();
+    if (!api) { el.saveNote.className = "status"; el.saveNote.textContent = NO_SAVE_MSG; return; }
     el.save.disabled = true; el.saveNote.className = "status"; el.saveNote.textContent = "Building PDF...";
     try {
       const blob = buildPdf();
       const base = (state.isExample ? "vmi" : state.fileName.replace(/\.[^.]+$/, "")) + "_labels.pdf";
-      await downloadsApi.save({ filename: base, data: blob });
+      await api.save({ filename: base, data: blob });
       el.saveNote.className = "status ok"; el.saveNote.textContent = "Saved " + base;
     } catch (e) {
       el.saveNote.className = "status";
@@ -691,12 +701,13 @@
 
 
   el.saveDoc.addEventListener("click", async () => {
-    if (!downloadsApi) return;
+    const api = await getApi();
+    if (!api) { el.saveNote.className = "status"; el.saveNote.textContent = NO_SAVE_MSG; return; }
     el.save.disabled = el.saveDoc.disabled = true; el.saveNote.className = "status"; el.saveNote.textContent = "Building Word file...";
     try {
       const blob = await buildDocx();
       const base = (state.isExample ? "vmi" : state.fileName.replace(/\.[^.]+$/, "")) + "_labels.docx";
-      await downloadsApi.save({ filename: base, data: blob });
+      await api.save({ filename: base, data: blob });
       el.saveNote.className = "status ok"; el.saveNote.textContent = "Saved " + base;
     } catch (e) {
       el.saveNote.className = "status";
@@ -712,11 +723,8 @@
     await loadLogo();
     await refresh();
     setStatus();
-    try {
-      downloadsApi = window.claude && window.claude.use ? await window.claude.use("downloads") : null;
-    } catch (e) { downloadsApi = null; }
-    if (!downloadsApi) el.saveNote.textContent = "Saving files is not available in this view. Open the page in claude.ai to save the PDF.";
-    el.save.disabled = !state.parts.length || !downloadsApi;
+    await getApi();
+    el.save.disabled = !state.parts.length;
     el.saveDoc.disabled = el.save.disabled;
   })();
 })();
