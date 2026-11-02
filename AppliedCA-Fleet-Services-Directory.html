@@ -1,0 +1,1833 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fleet Services Directory | Applied Canada</title>
+<style>
+  /* ===== BRAND COLOURS — change these two lines to restyle the whole page ===== */
+  :root {
+    --brand-navy: #1F1A6B;   /* header, headings, buttons */
+    --brand-teal: #01757F;   /* accents, links, card borders */
+    --ink: #1c1d26;
+    --muted: #5b5f6e;
+    --line: #dcdfe8;
+    --bg: #f4f5f9;
+    --card: #ffffff;
+    --warn-bg: #fff4d6;
+    --warn-ink: #6b4a00;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif; color: var(--ink); background: var(--bg); line-height: 1.45; }
+  header { background: var(--brand-navy); color: #fff; border-bottom: 5px solid var(--brand-teal); }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+  .head-inner { display: flex; align-items: center; gap: 24px; padding: 18px 0; flex-wrap: wrap; }
+  .logo { color: #fff; text-decoration: none; }
+  .logo img { height: 40px; display: block; }
+  .logo img[hidden], .logo .fallback[hidden] { display: none; }
+  .logo .fallback { font-size: 28px; font-weight: 700; letter-spacing: .5px; }
+  .head-title h1 { margin: 0; font-size: 22px; font-weight: 600; }
+  .head-title p { margin: 2px 0 0; font-size: 14px; opacity: .85; }
+  main { padding: 28px 0 48px; }
+  .banner { border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; font-size: 14px; }
+  .banner.sample { background: var(--warn-bg); color: var(--warn-ink); border: 1px solid #ecd48a; }
+  .banner.notice { background: #e8f3f4; color: #07454b; border: 1px solid #bfdde0; }
+  .picker { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; gap: 16px; align-items: end; flex-wrap: wrap; }
+  .picker label { display: block; font-weight: 600; color: var(--brand-navy); margin-bottom: 6px; }
+  .picker select { font-size: 16px; padding: 10px 12px; min-width: 320px; max-width: 100%; border: 1px solid #b9bdcc; border-radius: 6px; background: #fff; color: var(--ink); }
+  .picker select:focus, button:focus-visible { outline: 3px solid var(--brand-teal); outline-offset: 1px; }
+  button { font: inherit; background: var(--brand-navy); color: #fff; border: 0; border-radius: 6px; padding: 10px 16px; cursor: pointer; }
+  button.secondary { background: #fff; color: var(--brand-navy); border: 1px solid var(--brand-navy); }
+  #centre-info { margin: 24px 0 14px; display: none; }
+  #centre-info h2 { margin: 0; color: var(--brand-navy); font-size: 22px; }
+  #centre-info p { margin: 2px 0 0; color: var(--muted); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(440px, 1fr)); gap: 16px; }
+  @media (max-width: 520px) { .grid { grid-template-columns: 1fr; } .picker select { min-width: 0; width: 100%; } }
+  .card { background: var(--card); border: 1px solid var(--line); border-top: 5px solid var(--brand-teal); border-radius: 10px; padding: 16px 18px; }
+  .card h3 { margin: 0 0 10px; font-size: 17px; color: var(--brand-navy); display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+  .tag { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; background: #e8f3f4; color: #07454b; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+  .vendor + .vendor { border-top: 1px dashed var(--line); margin-top: 12px; padding-top: 12px; }
+  .vendor .name { font-weight: 700; font-size: 16px; }
+  .vendor dl { margin: 6px 0 0; display: grid; grid-template-columns: 82px 1fr; gap: 3px 10px; font-size: 14px; }
+  .vendor dt { color: var(--muted); }
+  .vendor dd { margin: 0; word-break: break-word; white-space: pre-line; }
+  .vendor a { color: var(--brand-teal); font-weight: 600; text-decoration: none; }
+  .vendor a:hover { text-decoration: underline; }
+  .none { color: var(--muted); font-size: 14px; }
+  .none strong { color: var(--ink); }
+  footer { color: var(--muted); font-size: 13px; margin-top: 28px; }
+  .actions { margin-top: 18px; display: none; gap: 10px; }
+  @media print {
+    header { border-bottom: 2px solid #000; }
+    .picker, .actions, button { display: none !important; }
+    body { background: #fff; }
+    .card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap head-inner">
+    <a class="logo" href="https://www.appliedcanada.ca" aria-label="Applied">
+      <img id="logo-img" alt="Applied" src="https://www.appliedcanada.ca/_ui/responsive/theme-dotcom/images/ait-logo-white.svg">
+      <span class="fallback" id="logo-fallback" hidden>Applied</span>
+    </a>
+    <div class="head-title">
+      <h1>Fleet Services Directory</h1>
+      <p>Find the right vendor for your service centre</p>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="sample-banner" class="banner sample" hidden>
+    <strong>Sample data.</strong> The service centres and vendors below are placeholders for layout purposes only. Do not use them to book service.
+  </div>
+  <div id="notice" class="banner notice" hidden></div>
+
+  <section class="picker" aria-label="Select your service centre">
+    <div>
+      <label for="centre">Step 1: Select your service centre number</label>
+      <select id="centre">
+        <option value="">Choose a service centre…</option>
+      </select>
+    </div>
+  </section>
+
+  <section id="centre-info" aria-live="polite">
+    <h2 id="centre-title"></h2>
+    <p id="centre-sub"></p>
+  </section>
+
+  <section id="results" class="grid" aria-label="Vendors by service"></section>
+
+  <div class="actions" id="actions">
+    <button class="secondary" id="print-btn" type="button">Print this page</button>
+    <button class="secondary" id="copy-btn" type="button">Copy link to this service centre</button>
+  </div>
+
+  <footer id="footer"></footer>
+</main>
+
+<script>
+/* ==========================================================================
+   DATA — this is the only section that needs editing day to day.
+   ========================================================================== */
+
+const CONFIG = {
+  sampleData: false,
+  lastUpdated: "2026-11-02",
+  notice: "Vendors listed here have been confirmed directly. If this differs from the Element portal's preferred vendor list, use this directory.",
+  fleetContact: { name: "Business Services", email: "", phone: "" }
+};
+
+const SERVICES = [
+  { id: "tires",      label: "Tires – New Tires and Seasonal Storage" },
+  { id: "pm",         label: "Preventative Maintenance" },
+  { id: "windshield", label: "Windshield Repair" },
+  { id: "engine",     label: "Major Engine Repair Services" },
+  { id: "decals",     label: "Decal Installation" }
+];
+
+/* Decal vendor not confirmed yet. When it is, replace the message with a real vendor entry. */
+const NATIONAL = {
+  decals: [{ message: "Decal vendor details coming soon. Please contact Business Services for decal installation." }]
+};
+
+const CENTRES = [
+ {
+  "num": "4013",
+  "name": "Seals Unlimited Stoney Creek",
+  "city": "Stoney Creek, ON",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire",
+     "phone": "905-930-0658",
+     "address": "696 Arvin Ave. Unit #100, Stoney Creek",
+     "notes": "Jason McGregor is our National Account Rep"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire",
+     "phone": "905-930-0658",
+     "address": "696 Arvin Ave. Unit #100, Stoney Creek",
+     "notes": "Jason McGregor is our National Account Rep"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "905-573-6007",
+     "address": "2493 Barton St E, Stoney Creek, ON L8E 2X1"
+    }
+   ],
+   "engine": [
+    {
+     "vendor": "Eastgate Ford",
+     "phone": "905-547-3211",
+     "address": "350 Parkdale Ave. N., Hamilton"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4310",
+  "name": "Applied Hamilton",
+  "city": "Hamilton, ON",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire",
+     "phone": "905-930-0658",
+     "address": "696 Arvin Ave. Unit #100, Stoney Creek"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire",
+     "phone": "905-930-0658",
+     "address": "696 Arvin Ave. Unit #100, Stoney Creek"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "905-573-6007",
+     "address": "2493 Barton St E, Stoney Creek, ON L8E 2X1"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4010",
+  "name": "Applied London",
+  "city": "London, ON",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire Fleet Centre",
+     "phone": "519-668-7655",
+     "address": "20 Enterprise Dr, Unit B, London, ON N6N 1A7",
+     "notes": "Alternative: Kal Tire Retail - 2030 Dundas St. London 519-455-2602"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire Fleet Centre",
+     "phone": "519-668-7655",
+     "address": "20 Enterprise Dr, Unit B, London, ON N6N 1A7",
+     "notes": "Alternative: Kal Tire Retail - 2030 Dundas St. London 519-455-2602"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "519-685-6066",
+     "address": "615 Wellington Rd, London, ON N6C 4R3",
+     "notes": "Alternative: Speedy Glass London West, 779 Wonderland Rd N (519-657-4527)."
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4050",
+  "name": "Applied Brantford",
+  "city": "Brantford, ON",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Cambridge",
+     "phone": "519-653-2882",
+     "address": "2401 Eagle St N, Cambridge, ON N3C 2V3",
+     "notes": "Alternative: Kal Tire Hamilton - 405 Concession St. Hamilton 289-246-1160"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Cambridge",
+     "phone": "519-653-2882",
+     "address": "2401 Eagle St N, Cambridge, ON N3C 2V3",
+     "notes": "Alternative: Kal Tire Hamilton - 405 Concession St. Hamilton 289-246-1160"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "519-758-5211",
+     "address": "181 Lynden Rd, Unit C3, Brantford, ON N3R 8A7"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4070",
+  "name": "Applied Downsview",
+  "city": "Downsview, ON",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Etobicoke (Kipling Ave)",
+     "phone": "416-740-2265",
+     "address": "1976 Kipling Ave, Etobicoke, ON M9W 4J5",
+     "notes": "Alternative: Kal Tire 8600 Keele St. Unit 1, Concord (289) 807-2450"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Etobicoke (Kipling Ave)",
+     "phone": "416-740-2265",
+     "address": "1976 Kipling Ave, Etobicoke, ON M9W 4J5",
+     "notes": "Alternative: Kal Tire 8600 Keele St. Unit 1, Concord (289) 807-2450"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "905-764-1599",
+     "address": "119 Doncaster Ave, Thornhill, ON L3T 1L6"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4074",
+  "name": "Applied Newmarket",
+  "city": "Newmarket, ON",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Newmarket (Davis Dr)",
+     "phone": "289-803-0192",
+     "address": "135 Davis Dr, Newmarket, ON L3Y 2N3"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Newmarket (Davis Dr)",
+     "phone": "289-803-0192",
+     "address": "135 Davis Dr, Newmarket, ON L3Y 2N3"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "905-895-1612",
+     "address": "16995 Yonge St, Unit 6, Newmarket, ON L3Y 5Y1"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4080",
+  "name": "Applied Etobicoke",
+  "city": "Etobicoke, ON",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Mississauga (Stanfield Rd)",
+     "phone": "905-848-3500",
+     "address": "2403 Stanfield Rd, Mississauga, ON L4Y 1R6",
+     "notes": "Alternative: Kal Tire 1976 Kipling Ave, Etobicoke (416) 740-2265"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Mississauga (Stanfield Rd)",
+     "phone": "905-848-3500",
+     "address": "2403 Stanfield Rd, Mississauga, ON L4Y 1R6",
+     "notes": "Alternative: Kal Tire 1976 Kipling Ave, Etobicoke (416) 740-2265"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "416-255-5561",
+     "address": "715 Kipling Ave, Etobicoke, ON M8Z 5G4"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4101",
+  "name": "Applied Saskatoon",
+  "city": "Saskatoon, SK",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Saskatoon (Faithfull Ave)",
+     "phone": "306-931-7133",
+     "address": "2907 Faithfull Ave, Saskatoon, SK S7K 8E8"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Saskatoon (Faithfull Ave)",
+     "phone": "306-931-7133",
+     "address": "2907 Faithfull Ave, Saskatoon, SK S7K 8E8"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "306-244-1141",
+     "address": "294 Venture Crescent, #101, Saskatoon, SK S7K 6M1"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4104",
+  "name": "Applied Prince George",
+  "city": "Prince George, BC",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Prince George (Boundary Rd)",
+     "phone": "250-561-1525",
+     "address": "750 Boundary Rd, Prince George, BC V2N 5T2"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Prince George (Boundary Rd)",
+     "phone": "250-561-1525",
+     "address": "750 Boundary Rd, Prince George, BC V2N 5T2"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "250-562-6661",
+     "address": "2316 Ospika Blvd S, Prince George, BC V2N 3N5"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4105",
+  "name": "Applied Quesnel",
+  "city": "Quesnel, BC",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Quesnel",
+     "phone": "250-992-6534",
+     "address": "1949 Cariboo Hwy, Quesnel, BC V2J 3P2"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Quesnel",
+     "phone": "250-992-6534",
+     "address": "1949 Cariboo Hwy, Quesnel, BC V2J 3P2"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "250-562-6661",
+     "address": "2316 Ospika Blvd S, Prince George, BC V2N 3N5"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4106",
+  "name": "Applied Williams Lake",
+  "city": "Williams Lake, BC",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Williams Lake",
+     "phone": "250-392-7147",
+     "address": "1055 MacKenzie Ave S, Williams Lake, BC V2G 3X9"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Williams Lake",
+     "phone": "250-392-7147",
+     "address": "1055 MacKenzie Ave S, Williams Lake, BC V2G 3X9"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "250-392-3363",
+     "address": "1278 South Broadway, Williams Lake, BC V2G 1A2"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4107",
+  "name": "Applied Kamloops",
+  "city": "Kamloops, BC",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Kamloops (Mt Paul Way)",
+     "phone": "250-374-6258",
+     "address": "788 Mt Paul Way, Kamloops, BC V2H 1B5"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Kamloops (Mt Paul Way)",
+     "phone": "250-374-6258",
+     "address": "788 Mt Paul Way, Kamloops, BC V2H 1B5"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "250-554-3171",
+     "address": "505 Tranquille Rd, Kamloops, BC V2B 3H3",
+     "notes": "Alternative: Speedy Glass Kamloops South Gate, 773 Notre Dame Dr (250-372-5909)."
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4108",
+  "name": "Applied Cranbrook",
+  "city": "Cranbrook, BC",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Cranbrook",
+     "phone": "250-426-4258",
+     "address": "1396 Theatre Rd, Cranbrook, BC V1C 7G1"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Cranbrook",
+     "phone": "250-426-4258",
+     "address": "1396 Theatre Rd, Cranbrook, BC V1C 7G1"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "250-489-3431",
+     "address": "404 Slater Rd NW, Cranbrook, BC V1C 4K5"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4109",
+  "name": "Applied Castlegar",
+  "city": "Castlegar, BC",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Castlegar",
+     "phone": "250-365-3311",
+     "address": "4280 Minto Rd, Castlegar, BC V1N 4C1"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Castlegar",
+     "phone": "250-365-3311",
+     "address": "4280 Minto Rd, Castlegar, BC V1N 4C1"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "250-365-6505",
+     "address": "956 Columbia Ave, Castlegar, BC V1N 1H3"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4111",
+  "name": "Applied Regina",
+  "city": "Regina, SK",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Regina (McDonald St)",
+     "phone": "306-721-4313",
+     "address": "111 McDonald St, Regina, SK S4N 7M2",
+     "notes": "Alternative(s): 804 Albert St. (306-775-2283); 635 University Park Dr (306-584-8473)"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Regina (McDonald St)",
+     "phone": "306-721-4313",
+     "address": "111 McDonald St, Regina, SK S4N 7M2",
+     "notes": "Alternative(s): 804 Albert St. (306-775-2283); 635 University Park Dr (306-584-8473)"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "306-525-9558",
+     "address": "525 Dewdney Ave E, Regina, SK S4N 4E9",
+     "notes": "Alternative: Speedy Glass Regina South, 4525 Albert St (306-337-1020)."
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4112",
+  "name": "Applied Esterhazy",
+  "city": "Esterhazy, SK",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Fountain Tire",
+     "phone": "306-745-2212",
+     "address": "323 Sumner St. Esterhazy, SK S0A 0X0",
+     "notes": "Alternative: Kal Tire 50 7 Ave S, Yorkton (306-782-2334)"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Fountain Tire",
+     "phone": "306-745-2212",
+     "address": "323 Sumner St. Esterhazy, SK S0A 0X0",
+     "notes": "Alternative: Kal Tire 50 7 Ave S, Yorkton (306-782-2334)"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "306-783-4406",
+     "address": "19 Myrtle Ave, Yorkton, SK S3N 1P6"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4113",
+  "name": "Applied Estevan",
+  "city": "Estevan, SK",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Estevan",
+     "phone": "306-634-3581",
+     "address": "1302 5 St, Estevan, SK S4A 0Z8"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Estevan",
+     "phone": "306-634-3581",
+     "address": "1302 5 St, Estevan, SK S4A 0Z8"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "306-842-7212",
+     "address": "330 Government Rd, Weyburn, SK S4H 3K3"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4115",
+  "name": "Applied Swift Current",
+  "city": "Swift Current, SK",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Swift Current",
+     "phone": "306-773-0611",
+     "address": "1091 Chaplin St W, Swift Current, SK S9H 1B5"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Swift Current",
+     "phone": "306-773-0611",
+     "address": "1091 Chaplin St W, Swift Current, SK S9H 1B5"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "306-773-2018",
+     "address": "178 9 Ave NW, Swift Current, SK S9H 1A5"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4131",
+  "name": "Applied Lloydminster",
+  "city": "Lloydminster, AB",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Lloydminster",
+     "phone": "780-875-9842",
+     "address": "5925 43 St, Lloydminster, AB T9V 2S6"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Lloydminster",
+     "phone": "780-875-9842",
+     "address": "5925 43 St, Lloydminster, AB T9V 2S6"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "780-875-7557",
+     "address": "5912 43 St, Lloydminster, AB T9V 2V3"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4138",
+  "name": "Applied Edmonton",
+  "city": "Edmonton, AB",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire Fleet Centre – Edmonton (68 Ave)",
+     "phone": "587-414-6010",
+     "address": "7107 68 Ave NW, Edmonton, AB T6B 3T6"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire Fleet Centre – Edmonton (68 Ave)",
+     "phone": "587-414-6010",
+     "address": "7107 68 Ave NW, Edmonton, AB T6B 3T6"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "780-437-6520",
+     "address": "9205A 63 Ave, Edmonton, AB T6E 3A7"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4140",
+  "name": "Applied Nisku",
+  "city": "Nisku, AB",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Leduc (Sparrow Cres)",
+     "phone": "780-980-6294",
+     "address": "7820 Sparrow Crescent, Leduc, AB T9E 7G1",
+     "notes": "Alternatives: 6543 Sparrow Dr, Leduc (780-986-1999)"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Leduc (Sparrow Cres)",
+     "phone": "780-980-6294",
+     "address": "7820 Sparrow Crescent, Leduc, AB T9E 7G1",
+     "notes": "Alternatives: 6543 Sparrow Dr, Leduc (780-986-1999)"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "780-437-6520",
+     "address": "9205A 63 Ave, Edmonton, AB T6E 3A7"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4144",
+  "name": "Applied Clairmont",
+  "city": "Clairmont, AB",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Clairmont",
+     "phone": "587-259-0889",
+     "address": "7301 99 St, Clairmont, AB T8X 5B1"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Clairmont",
+     "phone": "587-259-0889",
+     "address": "7301 99 St, Clairmont, AB T8X 5B1"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4146",
+  "name": "Applied Nisku",
+  "city": "Nisku, AB",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Leduc (Sparrow Cres)",
+     "phone": "780-980-6294",
+     "address": "7820 Sparrow Crescent, Leduc, AB T9E 7G1",
+     "notes": "Alternatives: 6543 Sparrow Dr, Leduc (780-986-1999)"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Leduc (Sparrow Cres)",
+     "phone": "780-980-6294",
+     "address": "7820 Sparrow Crescent, Leduc, AB T9E 7G1",
+     "notes": "Alternatives: 6543 Sparrow Dr, Leduc (780-986-1999)"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "780-437-6520",
+     "address": "9205A 63 Ave, Edmonton, AB T6E 3A7"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4162",
+  "name": "Applied Winnipeg",
+  "city": "Winnipeg, MB",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Winnipeg (Warman Rd)",
+     "phone": "204-231-5400",
+     "address": "145 Warman Rd, Winnipeg, MB R2J 3R3"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Winnipeg (Warman Rd)",
+     "phone": "204-231-5400",
+     "address": "145 Warman Rd, Winnipeg, MB R2J 3R3"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "204-663-2777",
+     "address": "1500 Regent Ave W, Unit 23, Winnipeg, MB R2C 3A8",
+     "notes": "Alternative: Speedy Glass Elmwood, 1002 Nairn Ave (204-668-5673)."
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4171",
+  "name": "Applied Calgary",
+  "city": "Calgary, AB",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Calgary (68 Ave SE)",
+     "phone": "403-236-7171",
+     "address": "5375 68 Ave SE, Calgary, AB T2C 4Y9"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Calgary (68 Ave SE)",
+     "phone": "403-236-7171",
+     "address": "5375 68 Ave SE, Calgary, AB T2C 4Y9"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "403-273-1316",
+     "address": "320 28 St NE, Calgary, AB T2A 5R2"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4173",
+  "name": "Applied Medicine Hat",
+  "city": "Medicine Hat, AB",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Medicine Hat",
+     "phone": "403-527-4900",
+     "address": "2671 Box Springs Cl NW, Medicine Hat, AB T1C 0C8"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Medicine Hat",
+     "phone": "403-527-4900",
+     "address": "2671 Box Springs Cl NW, Medicine Hat, AB T1C 0C8"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "403-526-7015",
+     "address": "821 17 St SW, Medicine Hat, AB T1A 4X9"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4181",
+  "name": "Applied Surrey",
+  "city": "Surrey, BC",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Surrey South",
+     "phone": "604-588-8473",
+     "address": "10090 King George Blvd. Surrey, BC V3T 2W4"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Surrey South",
+     "phone": "604-588-8473",
+     "address": "10090 King George Blvd. Surrey, BC V3T 2W4"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "604-533-5224",
+     "address": "20010 64 Ave, Ste 102, Langley, BC V2Y 1M7"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4183",
+  "name": "Applied Kelowna",
+  "city": "Kelowna, BC",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Kelowna (Leckie Rd)",
+     "phone": "250-860-5977",
+     "address": "2233 Leckie Rd, Kelowna, BC V1X 6Y5",
+     "notes": "Alternatives: 3482 BC-97 (250-765-7181); 1997 Kirschner Rd (250-861-4558)"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Kelowna (Leckie Rd)",
+     "phone": "250-860-5977",
+     "address": "2233 Leckie Rd, Kelowna, BC V1X 6Y5",
+     "notes": "Alternatives: 3482 BC-97 (250-765-7181); 1997 Kirschner Rd (250-861-4558)"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "250-860-2348",
+     "address": "1790 Springfield Rd, Kelowna, BC V1Y 5V6"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4184",
+  "name": "Applied Kamloops",
+  "city": "Kamloops, BC",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Kamloops (Notre Dame Dr)",
+     "phone": "250-372-3302",
+     "address": "825 Notre Dame Dr, Kamloops, BC V2C 5N8",
+     "notes": "Alternative: Kal Tire 1032 Victoria St. (250) 374-6248"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Kamloops (Notre Dame Dr)",
+     "phone": "250-372-3302",
+     "address": "825 Notre Dame Dr, Kamloops, BC V2C 5N8",
+     "notes": "Alternative: Kal Tire 1032 Victoria St. (250) 374-6248"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "250-554-3171",
+     "address": "505 Tranquille Rd, Kamloops, BC V2B 3H3",
+     "notes": "Alternative: Speedy Glass Kamloops South Gate, 773 Notre Dame Dr (250-372-5909)."
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4186",
+  "name": "Applied Parksville",
+  "city": "Parksville, BC",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Nanaimo (Island Hwy N)",
+     "phone": "250-390-4211",
+     "address": "6590 Island Hwy N, Nanaimo, BC V9V 1A3",
+     "notes": "If you don't want to drive 25km to Nanaimo - You can use OK Tire - 504 East Island Hwy E (250) 248-5041"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Nanaimo (Island Hwy N)",
+     "phone": "250-390-4211",
+     "address": "6590 Island Hwy N, Nanaimo, BC V9V 1A3",
+     "notes": "If you don't want to drive 25km to Nanaimo - You can use OK Tire - 504 East Island Hwy E (250) 248-5041"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "250-248-2220",
+     "address": "555 Island Hwy E, Parksville, BC V9P 1T5"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4191",
+  "name": "Applied Dartmouth",
+  "city": "Dartmouth, NS",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Dartmouth (Isnor Dr)",
+     "phone": "902-468-8473",
+     "address": "42 Isnor Dr, Dartmouth, NS B3B 1W3"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Dartmouth (Isnor Dr)",
+     "phone": "902-468-8473",
+     "address": "42 Isnor Dr, Dartmouth, NS B3B 1W3"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "902-468-8201",
+     "address": "41A Ilsley Ave, Dartmouth, NS B3B 1L5"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4192",
+  "name": "Applied East Centreville",
+  "city": "East Centreville, NB",
+  "services": {
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "506-328-9940",
+     "address": "407 Connell St, Woodstock, NB E7M 5G5"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4196",
+  "name": "Applied Saskatoon DC",
+  "city": "Saskatoon, SK",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Saskatoon (Faithfull Ave)",
+     "phone": "306-931-7133",
+     "address": "2907 Faithfull Ave, Saskatoon, SK S7K 8E8"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Saskatoon (Faithfull Ave)",
+     "phone": "306-931-7133",
+     "address": "2907 Faithfull Ave, Saskatoon, SK S7K 8E8"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "306-244-1141",
+     "address": "294 Venture Crescent, #101, Saskatoon, SK S7K 6M1",
+     "notes": "Alternative: Speedy Glass 1902 8 St E (306-955-0320)."
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4296",
+  "name": "Applied Nisku DC",
+  "city": "Nisku, AB",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Leduc (Sparrow Cres)",
+     "phone": "780-980-6294",
+     "address": "7820 Sparrow Crescent, Leduc, AB T9E 7G1",
+     "notes": "Alternatives: Kal Tire Fleet Centre: 7107 68 Ave NW, Edmonton (587-414-6010); Kal Tire 6543 Sparrow Dr, Leduc (780-986-1999)"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Leduc (Sparrow Cres)",
+     "phone": "780-980-6294",
+     "address": "7820 Sparrow Crescent, Leduc, AB T9E 7G1",
+     "notes": "Alternatives: Kal Tire Fleet Centre: 7107 68 Ave NW, Edmonton (587-414-6010); Kal Tire 6543 Sparrow Dr, Leduc (780-986-1999)"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "780-437-6520",
+     "address": "9205A 63 Ave, Edmonton, AB T6E 3A7"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4315",
+  "name": "Applied Ancaster Shop",
+  "city": "Ancaster, ON",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Hamilton (Concession St)",
+     "phone": "289-246-1160",
+     "address": "405 Concession St, Hamilton, ON L9A 1B8"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Hamilton (Concession St)",
+     "phone": "289-246-1160",
+     "address": "405 Concession St, Hamilton, ON L9A 1B8"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "905-574-6040",
+     "address": "1247 Upper James St, Hamilton, ON L9C 3B2"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "5261",
+  "name": "Applied Saskatoon Shop",
+  "city": "Saskatoon, SK",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Saskatoon (Faithfull Ave)",
+     "phone": "306-931-7133",
+     "address": "2907 Faithfull Ave, Saskatoon, SK S7K 8E8"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Saskatoon (Faithfull Ave)",
+     "phone": "306-931-7133",
+     "address": "2907 Faithfull Ave, Saskatoon, SK S7K 8E8"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "306-244-1141",
+     "address": "294 Venture Crescent, #101, Saskatoon, SK S7K 6M1",
+     "notes": "Alternative: Speedy Glass 1902 8 St E (306-955-0320)."
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "5263",
+  "name": "Applied Prince Albert Shop",
+  "city": "Prince Albert, SK",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Prince Albert",
+     "phone": "306-763-8426",
+     "address": "300 38 St E, Prince Albert, SK S6W 1A6"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Prince Albert",
+     "phone": "306-763-8426",
+     "address": "300 38 St E, Prince Albert, SK S6W 1A6"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "306-763-6426",
+     "address": "233 17 St W, Prince Albert, SK S6V 3X6"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "5272",
+  "name": "Applied Calgary Shop",
+  "city": "Calgary, AB",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Calgary (68 Ave SE)",
+     "phone": "403-236-7171",
+     "address": "5375 68 Ave SE, Calgary, AB T2C 4Y9"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Calgary (68 Ave SE)",
+     "phone": "403-236-7171",
+     "address": "5375 68 Ave SE, Calgary, AB T2C 4Y9"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "403-273-1316",
+     "address": "320 28 St NE, Calgary, AB T2A 5R2"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "5274",
+  "name": "Applied Fort McMurray Shop",
+  "city": "Fort McMurray, AB",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Fort McMurray (Gregoire Dr)",
+     "phone": "780-791-2575",
+     "address": "338 Gregoire Dr, Fort McMurray, AB T9H 3R2"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Fort McMurray (Gregoire Dr)",
+     "phone": "780-791-2575",
+     "address": "338 Gregoire Dr, Fort McMurray, AB T9H 3R2"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Crystal Glass Canada",
+     "phone": "780-743-2216",
+     "address": "360 Gregoire Dr, Fort McMurray, AB T9H 3R2"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "5281",
+  "name": "Applied Surrey Shop",
+  "city": "Surrey, BC",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire – Surrey South",
+     "phone": "604-588-8473",
+     "address": "10090 King George Blvd. Surrey, BC V3T 2W4"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire – Surrey South",
+     "phone": "604-588-8473",
+     "address": "10090 King George Blvd. Surrey, BC V3T 2W4"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "604-533-5224",
+     "address": "20010 64 Ave, Ste 102, Langley, BC V2Y 1M7",
+     "notes": "Alternative: Speedy Glass White Rock, 2498 King George Blvd, Surrey (604-536-8007)."
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4201",
+  "name": "Applied Baie-Comeau",
+  "city": "Baie-Comeau, QC",
+  "services": {
+   "windshield": [
+    {
+     "vendor": "Lebeau Vitres d'autos",
+     "phone": "418-296-8830",
+     "address": "291 Boul. La Salle, Baie-Comeau, QC G4Z 2L5"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4202",
+  "name": "Applied Trois Rivieres",
+  "city": "Trois-Rivières, QC",
+  "services": {
+   "windshield": [
+    {
+     "vendor": "Lebeau Vitres d'autos",
+     "phone": "819-378-2791",
+     "address": "4747 Boul. Gene-H.-Kruger, Trois-Rivières, QC G9A 4N4",
+     "notes": "Alternative: Lebeau Cap-de-la-Madeleine, 1030 Boul. Thibeau (819-374-2524)."
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4301",
+  "name": "Applied Brossard",
+  "city": "Brossard, QC",
+  "services": {
+   "windshield": [
+    {
+     "vendor": "Lebeau Vitres d'autos",
+     "phone": "450-444-9444",
+     "address": "425 Boul. Taschereau, La Prairie, QC J5R 1T8",
+     "notes": "Alternative: Lebeau Saint-Hubert, 3735 Boul. Taschereau (450-656-7180)."
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4305",
+  "name": "Applied Chicoutimi",
+  "city": "Chicoutimi, QC",
+  "services": {
+   "windshield": [
+    {
+     "vendor": "Lebeau Vitres d'autos",
+     "phone": "418-545-9779",
+     "address": "1911 Boul. Saint-Paul, Chicoutimi, QC G7K 1E1"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4306",
+  "name": "Applied Quebec",
+  "city": "Québec, QC",
+  "services": {
+   "windshield": [
+    {
+     "vendor": "Lebeau Vitres d'autos",
+     "phone": "418-681-0402",
+     "address": "355 Rue du Marais, Québec, QC G1M 3N8",
+     "notes": "Alternatives: Lebeau Neufchâtel, 9545 Boul. de l'Ormière (418-842-2332). Lebeau Ste-Foy, 980 Av. de Bourgogne (418-658-4530)."
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4308",
+  "name": "Applied Quebec Belt Shop",
+  "city": "Québec, QC",
+  "services": {
+   "windshield": [
+    {
+     "vendor": "Lebeau Vitres d'autos",
+     "phone": "418-681-0402",
+     "address": "355 Rue du Marais, Québec, QC G1M 3N8",
+     "notes": "Alternatives: Lebeau Neufchâtel, 9545 Boul. de l'Ormière (418-842-2332). Lebeau Ste-Foy, 980 Av. de Bourgogne (418-658-4530)."
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4318",
+  "name": "Applied Laval",
+  "city": "Laval, QC",
+  "services": {
+   "windshield": [
+    {
+     "vendor": "Lebeau Vitres d'autos",
+     "phone": "450-663-7651",
+     "address": "2207 Boul. des Laurentides, Laval, QC H7K 2J3",
+     "notes": "Alternative: Lebeau Chomedey, 1690 Boul. Curé-Labelle (450-688-3751)."
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4396",
+  "name": "Applied Quebec DC",
+  "city": "Québec, QC",
+  "services": {
+   "windshield": [
+    {
+     "vendor": "Lebeau Vitres d'autos",
+     "phone": "418-681-0402",
+     "address": "355 Rue du Marais, Québec, QC G1M 3N8",
+     "notes": "Alternatives: Lebeau Neufchâtel, 9545 Boul. de l'Ormière (418-842-2332). Lebeau Ste-Foy, 980 Av. de Bourgogne (418-658-4530)."
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "5105",
+  "name": "Applied Quebec Shop",
+  "city": "Québec, QC",
+  "services": {
+   "windshield": [
+    {
+     "vendor": "Lebeau Vitres d'autos",
+     "phone": "418-681-0402",
+     "address": "355 Rue du Marais, Québec, QC G1M 3N8",
+     "notes": "Alternatives: Lebeau Neufchâtel, 9545 Boul. de l'Ormière (418-842-2332). Lebeau Ste-Foy, 980 Av. de Bourgogne (418-658-4530)."
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "5201",
+  "name": "Applied Baie-Comeau Shop",
+  "city": "Baie-Comeau, QC",
+  "services": {
+   "windshield": [
+    {
+     "vendor": "Lebeau Vitres d'autos",
+     "phone": "418-296-8830",
+     "address": "291 Boul. La Salle, Baie-Comeau, QC G4Z 2L5"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4319",
+  "name": "Applied Val d'Or",
+  "city": "Val-d'Or, QC",
+  "services": {
+   "windshield": [
+    {
+     "vendor": "Lebeau Vitres d'autos",
+     "phone": "819-825-5300",
+     "address": "1756 3e Avenue, Val-d'Or, QC J9P 1W3"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ },
+ {
+  "num": "4172",
+  "name": "Applied Lethbridge",
+  "city": "Lethbridge, AB",
+  "services": {
+   "tires": [
+    {
+     "vendor": "Kal Tire",
+     "phone": "403-380-3320",
+     "address": "3604 9 Ave N, Lethbridge, AB T1H 5E7",
+     "notes": "Alternative: Kal Tire 3505 Mayor Magrath Dr S #10, Lethbridge (403-328-6235)"
+    }
+   ],
+   "pm": [
+    {
+     "vendor": "Kal Tire",
+     "phone": "403-380-3320",
+     "address": "3604 9 Ave N, Lethbridge, AB T1H 5E7",
+     "notes": "Alternative: Kal Tire 3505 Mayor Magrath Dr S #10, Lethbridge (403-328-6235)"
+    }
+   ],
+   "windshield": [
+    {
+     "vendor": "Speedy Glass",
+     "phone": "403-329-6311",
+     "address": "1717 2 Ave S, Lethbridge, AB T1J 0E8"
+    }
+   ],
+   "engine": [
+    {
+     "message": "Please visit your local dealer - GM or Ford"
+    }
+   ]
+  }
+ }
+];
+
+/* ==========================================================================
+   PAGE LOGIC — no need to edit below this line.
+   ========================================================================== */
+
+const $ = (id) => document.getElementById(id);
+const select = $("centre");
+const results = $("results");
+
+function el(tag, props, children) {
+  const node = document.createElement(tag);
+  if (props) for (const k in props) {
+    if (k === "text") node.textContent = props[k];
+    else node.setAttribute(k, props[k]);
+  }
+  (children || []).forEach((c) => c && node.appendChild(c));
+  return node;
+}
+
+function row(dt, ddNode) {
+  return [el("dt", { text: dt }), el("dd", null, [ddNode])];
+}
+
+function phoneLink(p) {
+  const digits = p.replace(/[^\d+]/g, "");
+  return el("a", { href: "tel:" + digits, text: p });
+}
+
+function vendorBlock(v) {
+  const dl = el("dl");
+  const add = (label, node) => row(label, node).forEach((n) => dl.appendChild(n));
+  if (v.contact) add("Contact", document.createTextNode(v.contact));
+  if (v.phone)   add("Phone", phoneLink(v.phone));
+  if (v.email)   add("Email", el("a", { href: "mailto:" + v.email, text: v.email }));
+  if (v.address) add("Address", document.createTextNode(v.address));
+  if (v.notes)   add("Notes", document.createTextNode(v.notes));
+  return el("div", { class: "vendor" }, [el("div", { class: "name", text: v.vendor }), dl]);
+}
+
+function serviceCard(service, vendors, isNational) {
+  const title = el("h3", null, [el("span", { text: service.label })]);
+  if (vendors.length && isNational && !vendors[0].message) title.appendChild(el("span", { class: "tag", text: "National program" }));
+  const card = el("article", { class: "card" }, [title]);
+  if (vendors.length) {
+    vendors.forEach((v) => card.appendChild(v.message ? el("p", { class: "none", text: v.message }) : vendorBlock(v)));
+  } else {
+    const fc = CONFIG.fleetContact;
+    const bits = [fc.name, fc.phone, fc.email].filter(Boolean).join(" · ");
+    card.appendChild(el("p", { class: "none" }, [
+      el("strong", { text: "No vendor on file. " }),
+      document.createTextNode("Please check your Element ONE app for Element approved vendor in your area.")
+    ]));
+  }
+  return card;
+}
+
+function render(num) {
+  results.replaceChildren();
+  const centre = CENTRES.find((c) => c.num === num);
+  $("centre-info").style.display = centre ? "block" : "none";
+  $("actions").style.display = centre ? "flex" : "none";
+  if (!centre) return;
+
+  $("centre-title").textContent = "Service Centre " + centre.num + " – " + centre.name;
+  $("centre-sub").textContent = centre.city || "";
+
+  SERVICES.forEach((s) => {
+    const own = (centre.services && centre.services[s.id]) || [];
+    const fallback = NATIONAL[s.id] || [];
+    const useNational = own.length === 0 && fallback.length > 0;
+    results.appendChild(serviceCard(s, useNational ? fallback : own, useNational));
+  });
+}
+
+function init() {
+  CENTRES.slice().sort((a, b) => a.num.localeCompare(b.num, undefined, { numeric: true })).forEach((c) => {
+    select.appendChild(el("option", { value: c.num, text: c.num + " – " + c.name + (c.city ? " (" + c.city + ")" : "") }));
+  });
+
+  $("sample-banner").hidden = !CONFIG.sampleData;
+  if (CONFIG.notice) { $("notice").textContent = CONFIG.notice; $("notice").hidden = false; }
+  $("footer").textContent = "Maintained by Business Services. Last updated " + CONFIG.lastUpdated + ". Spot something out of date? Contact " + CONFIG.fleetContact.name + (CONFIG.fleetContact.email ? " at " + CONFIG.fleetContact.email : "") + ".";
+
+  const img = $("logo-img");
+  const showFallback = () => { img.hidden = true; $("logo-fallback").hidden = false; };
+  img.addEventListener("error", showFallback);
+  if (img.complete && img.naturalWidth === 0) showFallback();
+
+  select.addEventListener("change", () => {
+    history.replaceState(null, "", select.value ? "#centre=" + encodeURIComponent(select.value) : location.pathname + location.search);
+    render(select.value);
+  });
+  $("print-btn").addEventListener("click", () => window.print());
+  $("copy-btn").addEventListener("click", (e) => {
+    const done = () => { e.target.textContent = "Link copied"; setTimeout(() => (e.target.textContent = "Copy link to this service centre"), 1800); };
+    if (navigator.clipboard) navigator.clipboard.writeText(location.href).then(done, () => {});
+  });
+
+  const m = location.hash.match(/centre=([^&]+)/);
+  if (m) {
+    const want = decodeURIComponent(m[1]);
+    if (CENTRES.some((c) => c.num === want)) { select.value = want; render(want); }
+  }
+}
+init();
+</script>
+</body>
+</html>
