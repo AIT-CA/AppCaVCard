@@ -51,6 +51,10 @@
   .vendor dl { margin: 6px 0 0; display: grid; grid-template-columns: 82px 1fr; gap: 3px 10px; font-size: 14px; }
   .vendor dt { color: var(--muted); }
   .vendor dd { margin: 0; word-break: break-word; white-space: pre-line; }
+  .vendor .account { font-weight: 700; font-size: 14px; margin-top: 2px; }
+  .booking-note { margin: 10px 0 0; font-size: 14px; background: #f4f5f9; border-left: 3px solid var(--brand-teal); border-radius: 4px; padding: 8px 12px; }
+  .booking-note p { margin: 0 0 4px; }
+  .booking-note ul { margin: 0; padding-left: 20px; }
   .vendor a { color: var(--brand-teal); font-weight: 600; text-decoration: none; }
   .vendor a:hover { text-decoration: underline; }
   .none { color: var(--muted); font-size: 14px; }
@@ -117,7 +121,7 @@
 
 const CONFIG = {
   sampleData: false,
-  lastUpdated: "2026-11-02",
+  lastUpdated: "2026-11-04",
   notice: "Vendors listed here have been confirmed directly. If this differs from the Element portal's preferred vendor list, use this directory.",
   fleetContact: { name: "Business Services", email: "", phone: "" }
 };
@@ -146,7 +150,8 @@ const CENTRES = [
      "vendor": "Kal Tire",
      "phone": "905-930-0658",
      "address": "696 Arvin Ave. Unit #100, Stoney Creek",
-     "notes": "Jason McGregor is our National Account Rep"
+     "notes": "Jason McGregor is our National Account Rep",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
@@ -154,7 +159,8 @@ const CENTRES = [
      "vendor": "Kal Tire",
      "phone": "905-930-0658",
      "address": "696 Arvin Ave. Unit #100, Stoney Creek",
-     "notes": "Jason McGregor is our National Account Rep"
+     "notes": "Jason McGregor is our National Account Rep",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -182,14 +188,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire",
      "phone": "905-930-0658",
-     "address": "696 Arvin Ave. Unit #100, Stoney Creek"
+     "address": "696 Arvin Ave. Unit #100, Stoney Creek",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire",
      "phone": "905-930-0658",
-     "address": "696 Arvin Ave. Unit #100, Stoney Creek"
+     "address": "696 Arvin Ave. Unit #100, Stoney Creek",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -216,7 +224,8 @@ const CENTRES = [
      "vendor": "Kal Tire Fleet Centre",
      "phone": "519-668-7655",
      "address": "20 Enterprise Dr, Unit B, London, ON N6N 1A7",
-     "notes": "Alternative: Kal Tire Retail - 2030 Dundas St. London 519-455-2602"
+     "notes": "Alternative: Kal Tire Retail - 2030 Dundas St. London 519-455-2602",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
@@ -224,7 +233,8 @@ const CENTRES = [
      "vendor": "Kal Tire Fleet Centre",
      "phone": "519-668-7655",
      "address": "20 Enterprise Dr, Unit B, London, ON N6N 1A7",
-     "notes": "Alternative: Kal Tire Retail - 2030 Dundas St. London 519-455-2602"
+     "notes": "Alternative: Kal Tire Retail - 2030 Dundas St. London 519-455-2602",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -252,7 +262,8 @@ const CENTRES = [
      "vendor": "Kal Tire – Cambridge",
      "phone": "519-653-2882",
      "address": "2401 Eagle St N, Cambridge, ON N3C 2V3",
-     "notes": "Alternative: Kal Tire Hamilton - 405 Concession St. Hamilton 289-246-1160"
+     "notes": "Alternative: Kal Tire Hamilton - 405 Concession St. Hamilton 289-246-1160",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
@@ -260,7 +271,8 @@ const CENTRES = [
      "vendor": "Kal Tire – Cambridge",
      "phone": "519-653-2882",
      "address": "2401 Eagle St N, Cambridge, ON N3C 2V3",
-     "notes": "Alternative: Kal Tire Hamilton - 405 Concession St. Hamilton 289-246-1160"
+     "notes": "Alternative: Kal Tire Hamilton - 405 Concession St. Hamilton 289-246-1160",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -287,7 +299,8 @@ const CENTRES = [
      "vendor": "Kal Tire – Etobicoke (Kipling Ave)",
      "phone": "416-740-2265",
      "address": "1976 Kipling Ave, Etobicoke, ON M9W 4J5",
-     "notes": "Alternative: Kal Tire 8600 Keele St. Unit 1, Concord (289) 807-2450"
+     "notes": "Alternative: Kal Tire 8600 Keele St. Unit 1, Concord (289) 807-2450",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
@@ -295,7 +308,8 @@ const CENTRES = [
      "vendor": "Kal Tire – Etobicoke (Kipling Ave)",
      "phone": "416-740-2265",
      "address": "1976 Kipling Ave, Etobicoke, ON M9W 4J5",
-     "notes": "Alternative: Kal Tire 8600 Keele St. Unit 1, Concord (289) 807-2450"
+     "notes": "Alternative: Kal Tire 8600 Keele St. Unit 1, Concord (289) 807-2450",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -321,14 +335,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Newmarket (Davis Dr)",
      "phone": "289-803-0192",
-     "address": "135 Davis Dr, Newmarket, ON L3Y 2N3"
+     "address": "135 Davis Dr, Newmarket, ON L3Y 2N3",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Newmarket (Davis Dr)",
      "phone": "289-803-0192",
-     "address": "135 Davis Dr, Newmarket, ON L3Y 2N3"
+     "address": "135 Davis Dr, Newmarket, ON L3Y 2N3",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -355,7 +371,8 @@ const CENTRES = [
      "vendor": "Kal Tire – Mississauga (Stanfield Rd)",
      "phone": "905-848-3500",
      "address": "2403 Stanfield Rd, Mississauga, ON L4Y 1R6",
-     "notes": "Alternative: Kal Tire 1976 Kipling Ave, Etobicoke (416) 740-2265"
+     "notes": "Alternative: Kal Tire 1976 Kipling Ave, Etobicoke (416) 740-2265",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
@@ -363,7 +380,8 @@ const CENTRES = [
      "vendor": "Kal Tire – Mississauga (Stanfield Rd)",
      "phone": "905-848-3500",
      "address": "2403 Stanfield Rd, Mississauga, ON L4Y 1R6",
-     "notes": "Alternative: Kal Tire 1976 Kipling Ave, Etobicoke (416) 740-2265"
+     "notes": "Alternative: Kal Tire 1976 Kipling Ave, Etobicoke (416) 740-2265",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -389,14 +407,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Saskatoon (Faithfull Ave)",
      "phone": "306-931-7133",
-     "address": "2907 Faithfull Ave, Saskatoon, SK S7K 8E8"
+     "address": "2907 Faithfull Ave, Saskatoon, SK S7K 8E8",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Saskatoon (Faithfull Ave)",
      "phone": "306-931-7133",
-     "address": "2907 Faithfull Ave, Saskatoon, SK S7K 8E8"
+     "address": "2907 Faithfull Ave, Saskatoon, SK S7K 8E8",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -422,14 +442,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Prince George (Boundary Rd)",
      "phone": "250-561-1525",
-     "address": "750 Boundary Rd, Prince George, BC V2N 5T2"
+     "address": "750 Boundary Rd, Prince George, BC V2N 5T2",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Prince George (Boundary Rd)",
      "phone": "250-561-1525",
-     "address": "750 Boundary Rd, Prince George, BC V2N 5T2"
+     "address": "750 Boundary Rd, Prince George, BC V2N 5T2",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -455,14 +477,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Quesnel",
      "phone": "250-992-6534",
-     "address": "1949 Cariboo Hwy, Quesnel, BC V2J 3P2"
+     "address": "1949 Cariboo Hwy, Quesnel, BC V2J 3P2",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Quesnel",
      "phone": "250-992-6534",
-     "address": "1949 Cariboo Hwy, Quesnel, BC V2J 3P2"
+     "address": "1949 Cariboo Hwy, Quesnel, BC V2J 3P2",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -488,14 +512,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Williams Lake",
      "phone": "250-392-7147",
-     "address": "1055 MacKenzie Ave S, Williams Lake, BC V2G 3X9"
+     "address": "1055 MacKenzie Ave S, Williams Lake, BC V2G 3X9",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Williams Lake",
      "phone": "250-392-7147",
-     "address": "1055 MacKenzie Ave S, Williams Lake, BC V2G 3X9"
+     "address": "1055 MacKenzie Ave S, Williams Lake, BC V2G 3X9",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -521,14 +547,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Kamloops (Mt Paul Way)",
      "phone": "250-374-6258",
-     "address": "788 Mt Paul Way, Kamloops, BC V2H 1B5"
+     "address": "788 Mt Paul Way, Kamloops, BC V2H 1B5",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Kamloops (Mt Paul Way)",
      "phone": "250-374-6258",
-     "address": "788 Mt Paul Way, Kamloops, BC V2H 1B5"
+     "address": "788 Mt Paul Way, Kamloops, BC V2H 1B5",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -555,14 +583,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Cranbrook",
      "phone": "250-426-4258",
-     "address": "1396 Theatre Rd, Cranbrook, BC V1C 7G1"
+     "address": "1396 Theatre Rd, Cranbrook, BC V1C 7G1",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Cranbrook",
      "phone": "250-426-4258",
-     "address": "1396 Theatre Rd, Cranbrook, BC V1C 7G1"
+     "address": "1396 Theatre Rd, Cranbrook, BC V1C 7G1",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -588,14 +618,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Castlegar",
      "phone": "250-365-3311",
-     "address": "4280 Minto Rd, Castlegar, BC V1N 4C1"
+     "address": "4280 Minto Rd, Castlegar, BC V1N 4C1",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Castlegar",
      "phone": "250-365-3311",
-     "address": "4280 Minto Rd, Castlegar, BC V1N 4C1"
+     "address": "4280 Minto Rd, Castlegar, BC V1N 4C1",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -622,7 +654,8 @@ const CENTRES = [
      "vendor": "Kal Tire – Regina (McDonald St)",
      "phone": "306-721-4313",
      "address": "111 McDonald St, Regina, SK S4N 7M2",
-     "notes": "Alternative(s): 804 Albert St. (306-775-2283); 635 University Park Dr (306-584-8473)"
+     "notes": "Alternative(s): 804 Albert St. (306-775-2283); 635 University Park Dr (306-584-8473)",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
@@ -630,7 +663,8 @@ const CENTRES = [
      "vendor": "Kal Tire – Regina (McDonald St)",
      "phone": "306-721-4313",
      "address": "111 McDonald St, Regina, SK S4N 7M2",
-     "notes": "Alternative(s): 804 Albert St. (306-775-2283); 635 University Park Dr (306-584-8473)"
+     "notes": "Alternative(s): 804 Albert St. (306-775-2283); 635 University Park Dr (306-584-8473)",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -692,14 +726,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Estevan",
      "phone": "306-634-3581",
-     "address": "1302 5 St, Estevan, SK S4A 0Z8"
+     "address": "1302 5 St, Estevan, SK S4A 0Z8",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Estevan",
      "phone": "306-634-3581",
-     "address": "1302 5 St, Estevan, SK S4A 0Z8"
+     "address": "1302 5 St, Estevan, SK S4A 0Z8",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -725,14 +761,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Swift Current",
      "phone": "306-773-0611",
-     "address": "1091 Chaplin St W, Swift Current, SK S9H 1B5"
+     "address": "1091 Chaplin St W, Swift Current, SK S9H 1B5",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Swift Current",
      "phone": "306-773-0611",
-     "address": "1091 Chaplin St W, Swift Current, SK S9H 1B5"
+     "address": "1091 Chaplin St W, Swift Current, SK S9H 1B5",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -758,14 +796,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Lloydminster",
      "phone": "780-875-9842",
-     "address": "5925 43 St, Lloydminster, AB T9V 2S6"
+     "address": "5925 43 St, Lloydminster, AB T9V 2S6",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Lloydminster",
      "phone": "780-875-9842",
-     "address": "5925 43 St, Lloydminster, AB T9V 2S6"
+     "address": "5925 43 St, Lloydminster, AB T9V 2S6",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -791,14 +831,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire Fleet Centre – Edmonton (68 Ave)",
      "phone": "587-414-6010",
-     "address": "7107 68 Ave NW, Edmonton, AB T6B 3T6"
+     "address": "7107 68 Ave NW, Edmonton, AB T6B 3T6",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire Fleet Centre – Edmonton (68 Ave)",
      "phone": "587-414-6010",
-     "address": "7107 68 Ave NW, Edmonton, AB T6B 3T6"
+     "address": "7107 68 Ave NW, Edmonton, AB T6B 3T6",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -825,7 +867,8 @@ const CENTRES = [
      "vendor": "Kal Tire – Leduc (Sparrow Cres)",
      "phone": "780-980-6294",
      "address": "7820 Sparrow Crescent, Leduc, AB T9E 7G1",
-     "notes": "Alternatives: 6543 Sparrow Dr, Leduc (780-986-1999)"
+     "notes": "Alternatives: 6543 Sparrow Dr, Leduc (780-986-1999)",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
@@ -833,7 +876,8 @@ const CENTRES = [
      "vendor": "Kal Tire – Leduc (Sparrow Cres)",
      "phone": "780-980-6294",
      "address": "7820 Sparrow Crescent, Leduc, AB T9E 7G1",
-     "notes": "Alternatives: 6543 Sparrow Dr, Leduc (780-986-1999)"
+     "notes": "Alternatives: 6543 Sparrow Dr, Leduc (780-986-1999)",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -859,14 +903,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Clairmont",
      "phone": "587-259-0889",
-     "address": "7301 99 St, Clairmont, AB T8X 5B1"
+     "address": "7301 99 St, Clairmont, AB T8X 5B1",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Clairmont",
      "phone": "587-259-0889",
-     "address": "7301 99 St, Clairmont, AB T8X 5B1"
+     "address": "7301 99 St, Clairmont, AB T8X 5B1",
+     "account": "001S8564A0"
     }
    ],
    "engine": [
@@ -886,7 +932,8 @@ const CENTRES = [
      "vendor": "Kal Tire – Leduc (Sparrow Cres)",
      "phone": "780-980-6294",
      "address": "7820 Sparrow Crescent, Leduc, AB T9E 7G1",
-     "notes": "Alternatives: 6543 Sparrow Dr, Leduc (780-986-1999)"
+     "notes": "Alternatives: 6543 Sparrow Dr, Leduc (780-986-1999)",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
@@ -894,7 +941,8 @@ const CENTRES = [
      "vendor": "Kal Tire – Leduc (Sparrow Cres)",
      "phone": "780-980-6294",
      "address": "7820 Sparrow Crescent, Leduc, AB T9E 7G1",
-     "notes": "Alternatives: 6543 Sparrow Dr, Leduc (780-986-1999)"
+     "notes": "Alternatives: 6543 Sparrow Dr, Leduc (780-986-1999)",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -920,14 +968,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Winnipeg (Warman Rd)",
      "phone": "204-231-5400",
-     "address": "145 Warman Rd, Winnipeg, MB R2J 3R3"
+     "address": "145 Warman Rd, Winnipeg, MB R2J 3R3",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Winnipeg (Warman Rd)",
      "phone": "204-231-5400",
-     "address": "145 Warman Rd, Winnipeg, MB R2J 3R3"
+     "address": "145 Warman Rd, Winnipeg, MB R2J 3R3",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -954,14 +1004,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Calgary (68 Ave SE)",
      "phone": "403-236-7171",
-     "address": "5375 68 Ave SE, Calgary, AB T2C 4Y9"
+     "address": "5375 68 Ave SE, Calgary, AB T2C 4Y9",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Calgary (68 Ave SE)",
      "phone": "403-236-7171",
-     "address": "5375 68 Ave SE, Calgary, AB T2C 4Y9"
+     "address": "5375 68 Ave SE, Calgary, AB T2C 4Y9",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -987,14 +1039,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Medicine Hat",
      "phone": "403-527-4900",
-     "address": "2671 Box Springs Cl NW, Medicine Hat, AB T1C 0C8"
+     "address": "2671 Box Springs Cl NW, Medicine Hat, AB T1C 0C8",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Medicine Hat",
      "phone": "403-527-4900",
-     "address": "2671 Box Springs Cl NW, Medicine Hat, AB T1C 0C8"
+     "address": "2671 Box Springs Cl NW, Medicine Hat, AB T1C 0C8",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -1020,14 +1074,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Surrey South",
      "phone": "604-588-8473",
-     "address": "10090 King George Blvd. Surrey, BC V3T 2W4"
+     "address": "10090 King George Blvd. Surrey, BC V3T 2W4",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Surrey South",
      "phone": "604-588-8473",
-     "address": "10090 King George Blvd. Surrey, BC V3T 2W4"
+     "address": "10090 King George Blvd. Surrey, BC V3T 2W4",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -1054,7 +1110,8 @@ const CENTRES = [
      "vendor": "Kal Tire – Kelowna (Leckie Rd)",
      "phone": "250-860-5977",
      "address": "2233 Leckie Rd, Kelowna, BC V1X 6Y5",
-     "notes": "Alternatives: 3482 BC-97 (250-765-7181); 1997 Kirschner Rd (250-861-4558)"
+     "notes": "Alternatives: 3482 BC-97 (250-765-7181); 1997 Kirschner Rd (250-861-4558)",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
@@ -1062,7 +1119,8 @@ const CENTRES = [
      "vendor": "Kal Tire – Kelowna (Leckie Rd)",
      "phone": "250-860-5977",
      "address": "2233 Leckie Rd, Kelowna, BC V1X 6Y5",
-     "notes": "Alternatives: 3482 BC-97 (250-765-7181); 1997 Kirschner Rd (250-861-4558)"
+     "notes": "Alternatives: 3482 BC-97 (250-765-7181); 1997 Kirschner Rd (250-861-4558)",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -1089,7 +1147,8 @@ const CENTRES = [
      "vendor": "Kal Tire – Kamloops (Notre Dame Dr)",
      "phone": "250-372-3302",
      "address": "825 Notre Dame Dr, Kamloops, BC V2C 5N8",
-     "notes": "Alternative: Kal Tire 1032 Victoria St. (250) 374-6248"
+     "notes": "Alternative: Kal Tire 1032 Victoria St. (250) 374-6248",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
@@ -1097,7 +1156,8 @@ const CENTRES = [
      "vendor": "Kal Tire – Kamloops (Notre Dame Dr)",
      "phone": "250-372-3302",
      "address": "825 Notre Dame Dr, Kamloops, BC V2C 5N8",
-     "notes": "Alternative: Kal Tire 1032 Victoria St. (250) 374-6248"
+     "notes": "Alternative: Kal Tire 1032 Victoria St. (250) 374-6248",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -1125,7 +1185,8 @@ const CENTRES = [
      "vendor": "Kal Tire – Nanaimo (Island Hwy N)",
      "phone": "250-390-4211",
      "address": "6590 Island Hwy N, Nanaimo, BC V9V 1A3",
-     "notes": "If you don't want to drive 25km to Nanaimo - You can use OK Tire - 504 East Island Hwy E (250) 248-5041"
+     "notes": "If you don't want to drive 25km to Nanaimo - You can use OK Tire - 504 East Island Hwy E (250) 248-5041",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
@@ -1133,7 +1194,8 @@ const CENTRES = [
      "vendor": "Kal Tire – Nanaimo (Island Hwy N)",
      "phone": "250-390-4211",
      "address": "6590 Island Hwy N, Nanaimo, BC V9V 1A3",
-     "notes": "If you don't want to drive 25km to Nanaimo - You can use OK Tire - 504 East Island Hwy E (250) 248-5041"
+     "notes": "If you don't want to drive 25km to Nanaimo - You can use OK Tire - 504 East Island Hwy E (250) 248-5041",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -1159,14 +1221,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Dartmouth (Isnor Dr)",
      "phone": "902-468-8473",
-     "address": "42 Isnor Dr, Dartmouth, NS B3B 1W3"
+     "address": "42 Isnor Dr, Dartmouth, NS B3B 1W3",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Dartmouth (Isnor Dr)",
      "phone": "902-468-8473",
-     "address": "42 Isnor Dr, Dartmouth, NS B3B 1W3"
+     "address": "42 Isnor Dr, Dartmouth, NS B3B 1W3",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -1211,14 +1275,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Saskatoon (Faithfull Ave)",
      "phone": "306-931-7133",
-     "address": "2907 Faithfull Ave, Saskatoon, SK S7K 8E8"
+     "address": "2907 Faithfull Ave, Saskatoon, SK S7K 8E8",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Saskatoon (Faithfull Ave)",
      "phone": "306-931-7133",
-     "address": "2907 Faithfull Ave, Saskatoon, SK S7K 8E8"
+     "address": "2907 Faithfull Ave, Saskatoon, SK S7K 8E8",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -1246,7 +1312,8 @@ const CENTRES = [
      "vendor": "Kal Tire – Leduc (Sparrow Cres)",
      "phone": "780-980-6294",
      "address": "7820 Sparrow Crescent, Leduc, AB T9E 7G1",
-     "notes": "Alternatives: Kal Tire Fleet Centre: 7107 68 Ave NW, Edmonton (587-414-6010); Kal Tire 6543 Sparrow Dr, Leduc (780-986-1999)"
+     "notes": "Alternatives: Kal Tire Fleet Centre: 7107 68 Ave NW, Edmonton (587-414-6010); Kal Tire 6543 Sparrow Dr, Leduc (780-986-1999)",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
@@ -1254,7 +1321,8 @@ const CENTRES = [
      "vendor": "Kal Tire – Leduc (Sparrow Cres)",
      "phone": "780-980-6294",
      "address": "7820 Sparrow Crescent, Leduc, AB T9E 7G1",
-     "notes": "Alternatives: Kal Tire Fleet Centre: 7107 68 Ave NW, Edmonton (587-414-6010); Kal Tire 6543 Sparrow Dr, Leduc (780-986-1999)"
+     "notes": "Alternatives: Kal Tire Fleet Centre: 7107 68 Ave NW, Edmonton (587-414-6010); Kal Tire 6543 Sparrow Dr, Leduc (780-986-1999)",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -1280,14 +1348,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Hamilton (Concession St)",
      "phone": "289-246-1160",
-     "address": "405 Concession St, Hamilton, ON L9A 1B8"
+     "address": "405 Concession St, Hamilton, ON L9A 1B8",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Hamilton (Concession St)",
      "phone": "289-246-1160",
-     "address": "405 Concession St, Hamilton, ON L9A 1B8"
+     "address": "405 Concession St, Hamilton, ON L9A 1B8",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -1313,14 +1383,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Saskatoon (Faithfull Ave)",
      "phone": "306-931-7133",
-     "address": "2907 Faithfull Ave, Saskatoon, SK S7K 8E8"
+     "address": "2907 Faithfull Ave, Saskatoon, SK S7K 8E8",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Saskatoon (Faithfull Ave)",
      "phone": "306-931-7133",
-     "address": "2907 Faithfull Ave, Saskatoon, SK S7K 8E8"
+     "address": "2907 Faithfull Ave, Saskatoon, SK S7K 8E8",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -1347,14 +1419,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Prince Albert",
      "phone": "306-763-8426",
-     "address": "300 38 St E, Prince Albert, SK S6W 1A6"
+     "address": "300 38 St E, Prince Albert, SK S6W 1A6",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Prince Albert",
      "phone": "306-763-8426",
-     "address": "300 38 St E, Prince Albert, SK S6W 1A6"
+     "address": "300 38 St E, Prince Albert, SK S6W 1A6",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -1380,14 +1454,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Calgary (68 Ave SE)",
      "phone": "403-236-7171",
-     "address": "5375 68 Ave SE, Calgary, AB T2C 4Y9"
+     "address": "5375 68 Ave SE, Calgary, AB T2C 4Y9",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Calgary (68 Ave SE)",
      "phone": "403-236-7171",
-     "address": "5375 68 Ave SE, Calgary, AB T2C 4Y9"
+     "address": "5375 68 Ave SE, Calgary, AB T2C 4Y9",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -1413,14 +1489,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Fort McMurray (Gregoire Dr)",
      "phone": "780-791-2575",
-     "address": "338 Gregoire Dr, Fort McMurray, AB T9H 3R2"
+     "address": "338 Gregoire Dr, Fort McMurray, AB T9H 3R2",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Fort McMurray (Gregoire Dr)",
      "phone": "780-791-2575",
-     "address": "338 Gregoire Dr, Fort McMurray, AB T9H 3R2"
+     "address": "338 Gregoire Dr, Fort McMurray, AB T9H 3R2",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -1446,14 +1524,16 @@ const CENTRES = [
     {
      "vendor": "Kal Tire – Surrey South",
      "phone": "604-588-8473",
-     "address": "10090 King George Blvd. Surrey, BC V3T 2W4"
+     "address": "10090 King George Blvd. Surrey, BC V3T 2W4",
+     "account": "001S8564A0"
     }
    ],
    "pm": [
     {
      "vendor": "Kal Tire – Surrey South",
      "phone": "604-588-8473",
-     "address": "10090 King George Blvd. Surrey, BC V3T 2W4"
+     "address": "10090 King George Blvd. Surrey, BC V3T 2W4",
+     "account": "001S8564A0"
     }
    ],
    "windshield": [
@@ -1695,6 +1775,7 @@ const CENTRES = [
    "tires": [
     {
      "vendor": "Kal Tire",
+     "account": "001S8564A0",
      "phone": "403-380-3320",
      "address": "3604 9 Ave N, Lethbridge, AB T1H 5E7",
      "notes": "Alternative: Kal Tire 3505 Mayor Magrath Dr S #10, Lethbridge (403-328-6235)"
@@ -1703,6 +1784,7 @@ const CENTRES = [
    "pm": [
     {
      "vendor": "Kal Tire",
+     "account": "001S8564A0",
      "phone": "403-380-3320",
      "address": "3604 9 Ave N, Lethbridge, AB T1H 5E7",
      "notes": "Alternative: Kal Tire 3505 Mayor Magrath Dr S #10, Lethbridge (403-328-6235)"
@@ -1751,15 +1833,33 @@ function phoneLink(p) {
   return el("a", { href: "tel:" + digits, text: p });
 }
 
-function vendorBlock(v) {
+const BOOKING_ITEMS = ["Unit Number", "Odometer Reading", "Element Card Number"];
+
+function bookingNote(service) {
+  const items = service.id === "tires" ? BOOKING_ITEMS.concat("Tire Size") : BOOKING_ITEMS;
+  return el("div", { class: "booking-note" }, [
+    el("p", null, [el("strong", { text: "Note: " }), document.createTextNode("Please have the following information on hand prior to calling to book your service:")]),
+    el("ul", null, items.map((t) => el("li", { text: t })))
+  ]);
+}
+
+function vendorBlock(v, service) {
   const dl = el("dl");
   const add = (label, node) => row(label, node).forEach((n) => dl.appendChild(n));
   if (v.contact) add("Contact", document.createTextNode(v.contact));
   if (v.phone)   add("Phone", phoneLink(v.phone));
   if (v.email)   add("Email", el("a", { href: "mailto:" + v.email, text: v.email }));
   if (v.address) add("Address", document.createTextNode(v.address));
-  if (v.notes)   add("Notes", document.createTextNode(v.notes));
-  return el("div", { class: "vendor" }, [el("div", { class: "name", text: v.vendor }), dl]);
+  const kids = [el("div", { class: "name", text: v.vendor })];
+  if (v.account) kids.push(el("div", { class: "account", text: "Account Number: " + v.account }));
+  kids.push(dl);
+  if (v.address) kids.push(bookingNote(service));
+  if (v.notes) {
+    const nd = el("dl");
+    row("Notes", document.createTextNode(v.notes)).forEach((n) => nd.appendChild(n));
+    kids.push(nd);
+  }
+  return el("div", { class: "vendor" }, kids);
 }
 
 function serviceCard(service, vendors, isNational) {
@@ -1767,7 +1867,7 @@ function serviceCard(service, vendors, isNational) {
   if (vendors.length && isNational && !vendors[0].message) title.appendChild(el("span", { class: "tag", text: "National program" }));
   const card = el("article", { class: "card" }, [title]);
   if (vendors.length) {
-    vendors.forEach((v) => card.appendChild(v.message ? el("p", { class: "none", text: v.message }) : vendorBlock(v)));
+    vendors.forEach((v) => card.appendChild(v.message ? el("p", { class: "none", text: v.message }) : vendorBlock(v, service)));
   } else {
     const fc = CONFIG.fleetContact;
     const bits = [fc.name, fc.phone, fc.email].filter(Boolean).join(" · ");
