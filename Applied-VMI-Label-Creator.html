@@ -102,6 +102,9 @@
   button.primary { font: inherit; font-weight: 600; font-size: 15px; background: var(--accent); color: var(--on-accent); border: 0; border-radius: 8px; padding: 12px 16px; cursor: pointer; width: 100%; }
   button.primary:hover:not(:disabled) { filter: brightness(1.12); }
   button.primary:disabled { opacity: 0.45; cursor: not-allowed; }
+  button.toggle { font: inherit; font-weight: 600; font-size: 14px; text-align: left; width: 100%; background: var(--bg); color: var(--fg); border: 1.5px solid var(--line); border-radius: 8px; padding: 10px 12px; cursor: pointer; }
+  button.toggle[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+  button.toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   button.secondary { font: inherit; font-weight: 600; font-size: 15px; background: transparent; color: var(--accent); border: 1.5px solid var(--accent); border-radius: 8px; padding: 10px 16px; cursor: pointer; width: 100%; }
   button.secondary:hover:not(:disabled) { background: var(--accent-soft); }
   button.secondary:disabled { opacity: 0.45; cursor: not-allowed; }
@@ -151,8 +154,16 @@
       <div class="step">
         <h2>3 &middot; Options</h2>
         <div class="opts">
+          <div class="field wide">
+            <button type="button" id="cmirToggle" class="toggle" aria-pressed="false">Print customer part number (CMIR): Off</button>
+            <p class="hint">When On, the CMIR prints at the top of the label and the Mfg part number prints just below it.</p>
+          </div>
+          <div class="field wide">
+            <button type="button" id="binToggle" class="toggle" aria-pressed="false">Print bin location: Off</button>
+            <p class="hint">When On, the bin location prints at the bottom right, and Min/Max get a little smaller to make room.</p>
+          </div>
           <div class="field"><label for="copies">Labels per part</label><input type="number" id="copies" min="1" max="20" value="1"></div>
-          <div class="field"><label for="mfgsize">Part number size (pt)</label><input type="number" id="mfgsize" min="6" max="16" step="0.5" value="8"></div>
+          <div class="field"><label for="mfgsize">Part number size (pt)</label><input type="number" id="mfgsize" min="6" max="16" step="0.5" value="10"></div>
           <div class="field"><label for="descsize">Description size (pt)</label><input type="number" id="descsize" min="5" max="10" step="0.5" value="7.5"></div>
           <div class="field"><label for="leftpad">Extra left margin (in)</label><input type="number" id="leftpad" min="0" max="0.2" step="0.01" value="0.04"></div>
           <div class="field"><label for="dmin">Default Min</label><input type="number" id="dmin" min="0" placeholder="blank"></div>
@@ -215,8 +226,10 @@
   const FIELDS = [
     { key: "sap",  label: "SAP number",      aliases: ["applied sap number", "applied sap", "sap number", "sap", "sap no", "applied part number", "product number", "product id"] },
     { key: "mfg",  label: "Mfg part number", aliases: ["mfg part number", "mfg part", "mfg part no", "mfg", "mfr part number", "mfr part", "manufacturer part number", "manufacturer part", "mfg number"] },
+    { key: "cmir", label: "Customer part # (CMIR)", aliases: ["customer part number", "customer part", "customer part no", "customer part #", "cmir", "cmir number", "cmir part number", "cust part number"] },
     { key: "desc", label: "Description",     aliases: ["description", "item description", "part description", "product description"] },
     { key: "min",  label: "Min",             aliases: ["min", "minimum", "min qty", "min quantity"] },
+    { key: "bin",  label: "Bin location",    aliases: ["bin location", "bin", "bin loc", "bin no", "bin number", "bin #", "storage location", "location"] },
     { key: "max",  label: "Max",             aliases: ["max", "maximum", "max qty", "max quantity"] }
   ];
   const normHead = s => String(s == null ? "" : s).toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -229,25 +242,27 @@
       const n = names[i];
       if (field.key === "sap" && /\bsap\b/.test(n)) return i;
       if (field.key === "mfg" && /(mfg|mfr|manufacturer)/.test(n) && n.includes("part")) return i;
+      if (field.key === "cmir" && (/cmir/.test(n) || (/(customer|cust)/.test(n) && n.includes("part")))) return i;
       if (field.key === "desc" && n.includes("desc")) return i;
       if (field.key === "min" && /^min\b/.test(n)) return i;
       if (field.key === "max" && /^max\b/.test(n)) return i;
+      if (field.key === "bin" && /\bbin\b/.test(n)) return i;
     }
     return -1;
   }
 
   /* ---------- state ---------- */
   const EXAMPLE_ROWS = [
-    ["Applied SAP Number", "Mfg Part Number", "Description", "Min", "Max"],
-    ["100756041", "6205", "Deep groove ball bearing 25mm x 52mm x 15mm", 2, 4],
-    ["100756042", "6204-2RS", "Deep groove ball bearing, double sealed, 20mm x 47mm x 14mm, C3 clearance, high temperature grease", 5, 10],
-    ["100123456", "22222-E-C3-VERY-LONG-PART", "Spherical roller bearing 110mm x 200mm x 53mm", 1, 2]
+    ["Applied SAP Number", "Mfg Part Number", "Description", "Min", "Max", "CMIR", "Bin"],
+    ["100756041", "6205", "Deep groove ball bearing 25mm x 52mm x 15mm", 2, 4, "BRG-6205-C3", "A-12"],
+    ["100756042", "6204-2RS", "Deep groove ball bearing, double sealed, 20mm x 47mm x 14mm, C3 clearance, high temperature grease", 5, 10, "", "B3"],
+    ["100123456", "22222-E-C3-VERY-LONG-PART", "Spherical roller bearing 110mm x 200mm x 53mm", 1, 2, "MILL-0042817", "C-104"]
   ];
   let state = { rows: EXAMPLE_ROWS, headerIdx: 0, map: {}, isExample: true, fileName: "vmi", parts: [] };
 
   const $ = id => document.getElementById(id);
   const el = { file: $("file"), drop: $("drop"), status: $("fileStatus"), fields: $("fields"), copies: $("copies"),
-    mfgsize: $("mfgsize"), leftpad: $("leftpad"), descsize: $("descsize"), dmin: $("dmin"), dmax: $("dmax"), prefix: $("prefix"), save: $("save"), saveDoc: $("saveDoc"), saveNote: $("saveNote"),
+    mfgsize: $("mfgsize"), leftpad: $("leftpad"), descsize: $("descsize"), cmirBtn: $("cmirToggle"), binBtn: $("binToggle"), dmin: $("dmin"), dmax: $("dmax"), prefix: $("prefix"), save: $("save"), saveDoc: $("saveDoc"), saveNote: $("saveNote"),
     count: $("count"), warnings: $("warnings"), grid: $("grid") };
 
   /* ---------- helpers ---------- */
@@ -268,7 +283,32 @@
   function fitSize(t, bold, max, min, maxW) { let s = max; while (s > min && width(t, bold, s) > maxW) s -= 0.25; return s; }
 
   /* largest size for the big part number at the top; the label shrinks it further if the text is long */
-  function mfgMax() { const v = parseFloat(el.mfgsize.value); return isFinite(v) ? Math.max(5, Math.min(16, v)) : 8; }
+  function mfgMax() { const v = parseFloat(el.mfgsize.value); return isFinite(v) ? Math.max(5, Math.min(16, v)) : 10; }
+  const cmirOn = () => el.cmirBtn.getAttribute("aria-pressed") === "true";
+  const binOn = () => el.binBtn.getAttribute("aria-pressed") === "true";
+  /* bottom row: Min/Max on the left, bin location on the right (when switched on and present) */
+  function bottomPlan(part, fullW) {
+    const withBin = binOn() && !!part.bin, mmSize = withBin ? 7 : 8;
+    const hasMM = part.min !== "" || part.max !== "";
+    const mmText = hasMM ? "Min: " + (part.min || "-") + (withBin ? "  " : "     ") + "Max: " + (part.max || "-") : "";
+    let binSize = 0, binTight = false;
+    if (withBin) {
+      const room = fullW - (hasMM ? width(mmText, true, mmSize) + 6 : 0);
+      binSize = fitSize(part.bin, true, 9, 5.5, room);
+      binTight = width(part.bin, true, binSize) > room;
+    }
+    return { withBin, mmSize, hasMM, mmText, binSize, binTight, has: hasMM || withBin,
+             h: Math.max(hasMM ? mmSize : 0, binSize) };
+  }
+  /* what prints in the big part-number slot: CMIR first (when switched on and present), then the Mfg part number */
+  function idTexts(part) {
+    const out = [];
+    if (cmirOn() && part.cmir) {
+      out.push({ text: part.cmir, bold: true, name: "CMIR number" });
+      if (part.mfg) out.push({ text: part.mfg, bold: false, name: "Mfg part number" });
+    } else if (part.mfg) out.push({ text: part.mfg, bold: true, name: "Mfg part number" });
+    return out;
+  }
   function descMax() { const v = parseFloat(el.descsize.value); return isFinite(v) ? Math.max(5, Math.min(10, v)) : 7.5; }
 
   /* extra blank space on the left edge, entered in inches, used in points; everything shifts right and the text column narrows */
@@ -292,37 +332,43 @@
     const tx = M + ox + QR + 6, fullW = W - M - tx, topW = fullW - LOGO - 3;
     let y = M;
 
-    const mfg = part.mfg;
-    if (mfg) {
-      const size = fitSize(mfg, true, mfgMax(), Math.min(9, mfgMax()), topW);
-      if (width(mfg, true, size) <= topW) {
-        y += size * 0.85; g.text(mfg, tx, y, size, true); y += size * 0.25 + 3;
-      } else {
-        let s = Math.min(9, mfgMax()), first, second;
-        for (;;) {
-          first = mfg;
-          while (width(first, true, s) > topW && first.length > 1) first = first.slice(0, -1);
-          second = mfg.slice(first.length);
-          if (width(second, true, s) <= topW || s <= 5) break;
-          s -= 0.25;
+    const ids = idTexts(part);
+    if (ids.length) {
+      ids.forEach((it, k) => {
+        const text = it.text, bold = it.bold, gap = k < ids.length - 1 ? 1.5 : 3;
+        const size = fitSize(text, bold, mfgMax(), Math.min(9, mfgMax()), topW);
+        if (width(text, bold, size) <= topW) {
+          y += size * 0.85; g.text(text, tx, y, size, bold); y += size * 0.25 + gap;
+        } else {
+          let s = Math.min(9, mfgMax()), first, second;
+          for (;;) {
+            first = text;
+            while (width(first, bold, s) > topW && first.length > 1) first = first.slice(0, -1);
+            second = text.slice(first.length);
+            if (width(second, bold, s) <= topW || s <= 5) break;
+            s -= 0.25;
+          }
+          warn.push(sap + ": " + it.name + " is long and wraps to two lines");
+          y += s * 0.85; g.text(first, tx, y, s, bold);
+          y += s * 1.1;  g.text(second, tx, y, s, bold);
+          y += s * 0.25 + gap - 1;
         }
-        warn.push(sap + ": Mfg part number is long and wraps to two lines");
-        y += s * 0.85; g.text(first, tx, y, s, true);
-        y += s * 1.1;  g.text(second, tx, y, s, true);
-        y += s * 0.25 + 2;
-      }
+      });
     } else {
       y += LOGO;
     }
 
     y = Math.max(y, M + LOGO + 2);   /* description always starts below the logo */
-    const mmSize = 8, mn = part.min, mx = part.max;
-    const hasMM = mn !== "" || mx !== "";
-    if (hasMM) g.text("Min: " + (mn || "-") + "     Max: " + (mx || "-"), tx, H - M - 1, mmSize, true);
+    const bp = bottomPlan(part, fullW);
+    if (bp.hasMM) g.text(bp.mmText, tx, H - M - 1, bp.mmSize, true);
+    if (bp.withBin) {
+      g.text(part.bin, W - M, H - M - 1, bp.binSize, true, "right");
+      if (bp.binTight) warn.push(sap + ": bin location is too long to fit beside Min/Max");
+    }
 
     const desc = part.desc;
     if (desc) {
-      const availH = (H - M - (hasMM ? mmSize + 4 : 0)) - y;
+      const availH = (H - M - (bp.has ? bp.h + 4 : 0)) - y;
       let size = descMax(), lines = [], fits = false;
       while (size >= 5) {
         lines = setFont(false, size).splitTextToSize(desc, fullW);
@@ -356,7 +402,7 @@
       text(s, x, y, size, bold, align) {
         ctx.fillStyle = "#000";
         ctx.font = (bold ? "bold " : "") + (size * S) + 'px Helvetica, Arial, "Liberation Sans", sans-serif';
-        ctx.textAlign = align === "center" ? "center" : "left";
+        ctx.textAlign = align === "center" ? "center" : align === "right" ? "right" : "left";
         ctx.textBaseline = "alphabetic";
         ctx.fillText(s, x * S, y * S);
       },
@@ -383,7 +429,7 @@
         doc.setTextColor(0, 0, 0);
         doc.setFont("helvetica", bold ? "bold" : "normal");
         doc.setFontSize(size);
-        doc.text(s, x, y, align === "center" ? { align: "center" } : undefined);
+        doc.text(s, x, y, align ? { align } : undefined);
       },
       logo(x, y, size) { if (logoPng) doc.addImage(logoPng, "PNG", x, y, size, size, "applied-logo", "FAST"); }
     };
@@ -419,7 +465,7 @@
       let mn = get(row, "min"), mx = get(row, "max");
       if (mn === "") mn = dmin;
       if (mx === "") mx = dmax;
-      parts.push({ sap, mfg: get(row, "mfg"), desc: get(row, "desc"), min: mn, max: mx });
+      parts.push({ sap, mfg: get(row, "mfg"), cmir: get(row, "cmir"), bin: get(row, "bin"), desc: get(row, "desc"), min: mn, max: mx });
     }
     state.parts = parts;
   }
@@ -449,6 +495,20 @@
     const warn = [];
     if (state.map.sap == null || state.map.sap < 0) warn.push("Pick the SAP number column above. Every label needs one.");
 
+    if (cmirOn()) {
+      if (state.map.cmir == null || state.map.cmir < 0) warn.push("CMIR is switched on. Pick the Customer part # (CMIR) column in step 2.");
+      else {
+        const miss = state.parts.filter(p => !p.cmir).length;
+        if (miss) warn.push(miss + " part" + (miss === 1 ? " has" : "s have") + " no CMIR number and will print the Mfg part number only.");
+      }
+    }
+    if (binOn()) {
+      if (state.map.bin == null || state.map.bin < 0) warn.push("Bin location is switched on. Pick the Bin location column in step 2.");
+      else {
+        const miss = state.parts.filter(p => !p.bin).length;
+        if (miss) warn.push(miss + " part" + (miss === 1 ? " has" : "s have") + " no bin location and will print without one.");
+      }
+    }
     state.parts.forEach(p => layout(dryPen, p, prefix + encodeURIComponent(p.sap), warn));
 
     el.count.textContent = total
@@ -574,20 +634,21 @@
   /* same sizing rules as the PDF layout, expressed for Word paragraphs */
   function planText(part) {
     const ox = leftPad(), tx = M + ox + QR + 6, fullW = W - M - tx, topW = fullW - LOGO - 3;
-    const plan = { sapSize: fitSize(part.sap, true, 8, 5, QR + 4), mfgSize: 14, mfgLines: 1, descSize: 7.5, descText: part.desc, descLines: 0 };
-    if (part.mfg) {
-      plan.mfgSize = fitSize(part.mfg, true, mfgMax(), Math.min(9, mfgMax()), topW);
-      if (width(part.mfg, true, plan.mfgSize) <= topW) plan.mfgLines = 1;
-      else {
+    const plan = { sapSize: fitSize(part.sap, true, 8, 5, QR + 4), descSize: 7.5, descText: part.desc, descLines: 0, ids: [], idH: 0 };
+    idTexts(part).forEach((it, k, arr) => {
+      let size = fitSize(it.text, it.bold, mfgMax(), Math.min(9, mfgMax()), topW), lines = 1;
+      if (width(it.text, it.bold, size) > topW) {
         /* Word wraps greedily at hyphens, so leave room: shrink until the text needs well under two full lines */
-        let sz = Math.min(9, mfgMax()); while (sz > 5.5 && width(part.mfg, true, sz) > 1.5 * topW) sz -= 0.25;
-        plan.mfgSize = sz; plan.mfgLines = 2;
+        size = Math.min(9, mfgMax()); while (size > 5.5 && width(it.text, it.bold, size) > 1.5 * topW) size -= 0.25;
+        lines = 2;
       }
-    }
+      plan.ids.push({ text: it.text, bold: it.bold, size, lines, last: k === arr.length - 1 });
+      plan.idH += lines * size * 1.1 + (k === arr.length - 1 ? 3 : 1.5);
+    });
     if (part.desc) {
-      const hasMM = part.min !== "" || part.max !== "";
-      const used = Math.max(LOGO + 2, part.mfg ? plan.mfgLines * plan.mfgSize * 1.1 + 3 : 0);
-      const availH = 60 - (hasMM ? 12 : 0) - used;
+      const bp = bottomPlan(part, fullW);
+      const used = Math.max(LOGO + 2, plan.idH);
+      const availH = 60 - (bp.has ? bp.h + 4 : 0) - used;
       let size = descMax(), lines = [], fits = false;
       while (size >= 5) {
         lines = setFont(false, size).splitTextToSize(part.desc, fullW);
@@ -604,7 +665,7 @@
       }
       plan.descSize = size; plan.descLines = lines.length;
     }
-    plan.used = Math.max(LOGO + 2, part.mfg ? plan.mfgLines * plan.mfgSize * 1.1 + 3 : 0) + plan.descLines * plan.descSize * 1.12;
+    plan.used = Math.max(LOGO + 2, plan.idH) + plan.descLines * plan.descSize * 1.12;
     return plan;
   }
 
@@ -624,7 +685,6 @@
     for (const part of state.parts) {
       const plan = planText(part);
       const url = prefix + encodeURIComponent(part.sap);
-      const hasMM = part.min !== "" || part.max !== "";
 
       const left = [
         new D.Paragraph({ spacing: { before: 0, after: 0 }, children: [
@@ -635,9 +695,12 @@
       ];
 
       const right = [];
-      if (part.mfg) {
-        right.push(new D.Paragraph({ indent: { right: tw(LOGO + 3) }, spacing: Object.assign({ before: 0, after: tw(Math.max(3, LOGO + 2 - plan.mfgLines * plan.mfgSize * 1.1)) }, exact(plan.mfgSize * 1.1)),
-          children: [new D.TextRun({ text: part.mfg, bold: true, size: hp(plan.mfgSize), font: "Arial" })] }));
+      if (plan.ids.length) {
+        plan.ids.forEach(it => {
+          const after = it.last ? Math.max(3, LOGO + 2 - plan.idH + 3) : 1.5;
+          right.push(new D.Paragraph({ indent: { right: tw(LOGO + 3) }, spacing: Object.assign({ before: 0, after: tw(after) }, exact(it.size * 1.1)),
+            children: [new D.TextRun({ text: it.text, bold: it.bold, size: hp(it.size), font: "Arial" })] }));
+        });
       } else {
         right.push(new D.Paragraph({ spacing: Object.assign({ before: 0, after: 0 }, exact(LOGO + 2)), children: [] }));
       }
@@ -645,9 +708,13 @@
         right.push(new D.Paragraph({ spacing: Object.assign({ before: 0, after: 0 }, exact(plan.descSize * 1.12)),
           children: [new D.TextRun({ text: plan.descText, size: hp(plan.descSize), font: "Arial" })] }));
       }
-      if (hasMM) {
-        right.push(new D.Paragraph({ spacing: Object.assign({ before: tw(Math.max(0, 50 - plan.used)), after: 0 }, exact(9)),
-          children: [new D.TextRun({ text: "Min: " + (part.min || "-") + "     Max: " + (part.max || "-"), bold: true, size: 16, font: "Arial" })] }));
+      const bpw = bottomPlan(part, W - M - (M + ox + QR + 6));
+      if (bpw.has) {
+        const kids = [];
+        if (bpw.hasMM) kids.push(new D.TextRun({ text: bpw.mmText, bold: true, size: hp(bpw.mmSize), font: "Arial" }));
+        if (bpw.withBin) kids.push(new D.TextRun({ children: [new D.Tab(), part.bin], bold: true, size: hp(bpw.binSize), font: "Arial" }));
+        right.push(new D.Paragraph({ tabStops: [{ type: D.TabStopType.RIGHT, position: rightW }],
+          spacing: Object.assign({ before: tw(Math.max(0, 50 - plan.used)), after: 0 }, exact(9)), children: kids }));
       }
 
       const cell = (w, kids) => new D.TableCell({ width: { size: w, type: D.WidthType.DXA }, margins: zero, borders: noB, verticalAlign: D.VerticalAlign.TOP, children: kids });
@@ -736,6 +803,20 @@
       el.saveNote.textContent = e && e.code === "declined" ? "Save cancelled." : "The Word file could not be saved from here. " + ((e && e.message) || "");
     }
     el.save.disabled = el.saveDoc.disabled = !state.parts.length;
+  });
+
+  el.cmirBtn.addEventListener("click", async () => {
+    const on = !cmirOn();
+    el.cmirBtn.setAttribute("aria-pressed", String(on));
+    el.cmirBtn.textContent = "Print customer part number (CMIR): " + (on ? "On" : "Off");
+    await refresh(); setStatus();
+  });
+
+  el.binBtn.addEventListener("click", async () => {
+    const on = !binOn();
+    el.binBtn.setAttribute("aria-pressed", String(on));
+    el.binBtn.textContent = "Print bin location: " + (on ? "On" : "Off");
+    await refresh(); setStatus();
   });
 
   /* ---------- start ---------- */
